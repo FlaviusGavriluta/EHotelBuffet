@@ -25,4 +25,10 @@ public class Buffet {
     }
 
 
+    @Override
+    public String toString() {
+        return "Buffet{" +
+                "mealPortions=" + mealPortions +
+                '}';
+    }
 }

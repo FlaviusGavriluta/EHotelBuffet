@@ -3,6 +3,8 @@ package com.codecool.ehotel;
 import com.codecool.ehotel.model.Guest;
 import com.codecool.ehotel.model.MealPortion;
 import com.codecool.ehotel.model.MealType;
+import com.codecool.ehotel.service.buffet.BuffetService;
+import com.codecool.ehotel.service.buffet.BuffetServiceImpl;
 import com.codecool.ehotel.service.guest.GuestService;
 import com.codecool.ehotel.service.guest.GuestServiceImpl;
 import com.codecool.ehotel.service.logger.ConsoleLogger;
@@ -42,18 +44,14 @@ public class EHotelBuffetApplication {
         // Run breakfast buffet
         logger.info("Buffet is open");
         Buffet buffet = new Buffet();
-        List<MealPortion> mealBatch = new ArrayList<>();
-        MealPortion meal1 = new MealPortion(MealType.PANCAKE, LocalDateTime.now());
-        MealPortion meal2 = new MealPortion(MealType.FRIED_SAUSAGE, LocalDateTime.now());
-        mealBatch.add(meal1);
-        mealBatch.add(meal2);
+        BuffetService buffetService = new BuffetServiceImpl();
+        buffetService.refillBuffet(buffet, List.of(
+                new BuffetService.RefillRequest(MealType.PANCAKE, 10),
+                new BuffetService.RefillRequest(MealType.CROISSANT, 10),
+                new BuffetService.RefillRequest(MealType.CEREAL, 10)
+        ));
 
-        buffet.addMealPortion(mealBatch);
-        buffet.getMealPortionsByType(MealType.PANCAKE);
-        for(MealPortion meal : buffet.getMealPortionsByType(MealType.PANCAKE)){
-            logger.info(meal.mealType() + " " + meal.timestamp());
-        }
-        logger.info("There are " + buffet.getMealPortionsByType(MealType.PANCAKE).size() + " pancakes");
+        logger.info("There are " + buffet + " pancakes");
         logger.info("Buffet is closed");
     }
 }

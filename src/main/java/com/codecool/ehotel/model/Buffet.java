@@ -1,5 +1,28 @@
 package com.codecool.ehotel.model;
 
-public record Buffet () {
+import java.util.Comparator;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
+
+public class Buffet {
+    private final List<MealPortion> mealPortions;
+
+    public Buffet() {
+        this.mealPortions = new ArrayList<>();
+    }
+
+    public void addMealPortion(List<MealPortion> portions) {
+        mealPortions.addAll(portions);
+    }
+
+    public List<MealPortion> getMealPortionsByType(MealType mealType) {
+        return mealPortions.stream()
+                .filter(portion -> portion.mealType().equals(mealType))
+                .sorted(Comparator.comparing(MealPortion::timestamp))
+                .collect(Collectors.toList());
+    }
+
 
 }

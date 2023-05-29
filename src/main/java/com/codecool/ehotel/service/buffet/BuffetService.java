@@ -11,4 +11,6 @@ public interface BuffetService {
 
     record RefillRequest(MealType mealType, int amount) {
     }
+
+    boolean consumeFreshest(Buffet buffet, MealType mealType);
 }

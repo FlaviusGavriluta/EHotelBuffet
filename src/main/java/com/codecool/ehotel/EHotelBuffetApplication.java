@@ -46,12 +46,19 @@ public class EHotelBuffetApplication {
         Buffet buffet = new Buffet();
         BuffetService buffetService = new BuffetServiceImpl();
         buffetService.refillBuffet(buffet, List.of(
-                new BuffetService.RefillRequest(MealType.PANCAKE, 10),
-                new BuffetService.RefillRequest(MealType.CROISSANT, 10),
-                new BuffetService.RefillRequest(MealType.CEREAL, 10)
+                new BuffetService.RefillRequest(MealType.PANCAKE, 1),
+                new BuffetService.RefillRequest(MealType.CROISSANT, 1),
+                new BuffetService.RefillRequest(MealType.CEREAL, 1)
         ));
-
-        logger.info("There are " + buffet + " pancakes");
+        buffetService.refillBuffet(buffet, List.of(
+                new BuffetService.RefillRequest(MealType.PANCAKE, 1),
+                new BuffetService.RefillRequest(MealType.CROISSANT, 1),
+                new BuffetService.RefillRequest(MealType.CEREAL, 1)
+        ));
+        if(buffetService.consumeFreshest(buffet, MealType.PANCAKE)) {
+            logger.info("Guest ate a pancake");
+            logger.info("There are " + buffet + " pancakes");
+        }
         logger.info("Buffet is closed");
     }
 }

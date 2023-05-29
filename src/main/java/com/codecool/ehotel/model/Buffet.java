@@ -31,4 +31,9 @@ public class Buffet {
                 "mealPortions=" + mealPortions +
                 '}';
     }
+
+    public void removeMealPortion(MealPortion mealPortion) {
+        mealPortions.remove(mealPortion);
+
+    }
 }

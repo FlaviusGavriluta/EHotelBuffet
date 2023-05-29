@@ -5,7 +5,6 @@ import com.codecool.ehotel.model.MealPortion;
 import com.codecool.ehotel.model.MealType;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,5 +26,15 @@ public class BuffetServiceImpl implements BuffetService {
             }
         }
         buffet.addMealPortion(mealPortions);
+    }
+
+    @Override
+    public boolean consumeFreshest(Buffet buffet, MealType mealType) {
+        List<MealPortion> mealPortionsByType = buffet.getMealPortionsByType(mealType);
+        if (!mealPortionsByType.isEmpty()) {
+            buffet.removeMealPortion(mealPortionsByType.get(mealPortionsByType.size() - 1));
+            return true;
+        }
+        return false;
     }
 }

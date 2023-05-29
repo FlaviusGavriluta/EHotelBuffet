@@ -36,7 +36,7 @@ public class EHotelBuffetApplication {
             allGuests.add(guest);
         }
         LocalDate targetDate = LocalDate.of(2023, 7, 15);
-        Set<Guest> guestForADay = guestService.getGuestsForDay(allGuests, targetDate);
+        List<Guest> guestForADay = guestService.getGuestsForDay(allGuests, targetDate);
         logger.info("Guests for " + targetDate + ": " + guestForADay);
         for (Guest guest : guestForADay) {
             logger.info(guest.name() + " is a " + guest.guestType() + " guest");
@@ -58,7 +58,7 @@ public class EHotelBuffetApplication {
 
         logger.info("There are " + buffet);
 
-        if(buffetService.consumeFreshest(buffet, MealType.PANCAKE)) {
+        if (buffetService.consumeFreshest(buffet, MealType.PANCAKE)) {
             logger.info("Guest ate a pancake");
             logger.info("There are " + buffet + " pancakes");
         }
@@ -66,6 +66,11 @@ public class EHotelBuffetApplication {
         logger.info("Waste cost: " + buffetService.collectWaste(buffet, MealType.CROISSANT.getDurability(), LocalDateTime.now()));
 
         logger.info("There are " + buffet);
+
+        GuestService guestService1 = new GuestServiceImpl();
+       for(int i=0;i<guestService1.splitGuestsIntoBreakfastGroups(guestForADay).size();i++){
+           logger.info("Guests for breakfast: " + guestService1.splitGuestsIntoBreakfastGroups(guestForADay).get(i));
+       }
 
         logger.info("Buffet is closed");
     }

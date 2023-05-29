@@ -10,6 +10,7 @@ public interface GuestService {
 
     Guest generateRandomGuest(LocalDate seasonStart, LocalDate seasonEnd);
 
-    Set<Guest> getGuestsForDay(List<Guest> guests, LocalDate date);
+    List<Guest> getGuestsForDay(List<Guest> guests, LocalDate date);
 
+    List<List<Guest>> splitGuestsIntoBreakfastGroups(List<Guest> guests);
 }

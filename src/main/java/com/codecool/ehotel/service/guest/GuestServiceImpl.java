@@ -6,10 +6,7 @@ import com.codecool.ehotel.service.guest.GuestService;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 
 public class GuestServiceImpl implements GuestService {
@@ -17,7 +14,6 @@ public class GuestServiceImpl implements GuestService {
     private static Random random = new Random();
     private static final List<String> GUEST_NAMES = List.of("John", "Jane", "Jack", "Jill", "James", "Judy", "Joe", "Jenny", "Jim", "Jessica");
     private static final GuestType[] GUEST_TYPES = GuestType.values();
-
 
 
     @Override
@@ -30,14 +26,27 @@ public class GuestServiceImpl implements GuestService {
     }
 
     @Override
-    public Set<Guest> getGuestsForDay(List<Guest> guests, LocalDate date) {
-        Set<Guest> guestsForDay = new HashSet<>();
+    public List<Guest> getGuestsForDay(List<Guest> guests, LocalDate date) {
+        List<Guest> guestsForDay = new ArrayList<>();
         for (Guest guest : guests) {
             if (date.isAfter(guest.checkIn()) && date.isBefore(guest.checkOut())) {
                 guestsForDay.add(guest);
             }
         }
         return guestsForDay;
+    }
+
+    @Override
+    public List<List<Guest>> splitGuestsIntoBreakfastGroups(List<Guest> guests) {
+        int breakfastCycles = 8;
+        List<List<Guest>> breakfastGroups  = new ArrayList<>(Collections.nCopies(breakfastCycles, new ArrayList<>()));
+        Collections.shuffle(guests);
+        int currentCycle = 0;
+        for (Guest guest : guests) {
+            breakfastGroups.get(currentCycle).add(guest);
+            currentCycle = (currentCycle + 1) % breakfastCycles;
+        }
+        return breakfastGroups;
     }
 
     public String getRandomName() {

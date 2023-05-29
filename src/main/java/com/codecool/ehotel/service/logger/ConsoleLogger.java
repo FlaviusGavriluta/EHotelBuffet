@@ -1,8 +1,6 @@
 package com.codecool.ehotel.service.logger;
 
-import com.codecool.ehotel.service.logger.logger;
-
-public class ConsoleLogger implements logger {
+public class ConsoleLogger implements Logger {
     @Override
     public void info(String message) {
         System.out.println("[INFO] " + message);

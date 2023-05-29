@@ -1,11 +1,13 @@
 package com.codecool.ehotel.service.buffet;
 
 import com.codecool.ehotel.model.Buffet;
+import com.codecool.ehotel.model.MealDurability;
 import com.codecool.ehotel.model.MealPortion;
 import com.codecool.ehotel.model.MealType;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,5 +38,21 @@ public class BuffetServiceImpl implements BuffetService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public int collectWaste(Buffet buffet, MealDurability mealDurability, LocalDateTime time) {
+        List<MealPortion> mealPortions = buffet.getMealPortions();
+
+        int totalCost = 0;
+        Iterator<MealPortion> iterator = mealPortions.iterator();
+        while (iterator.hasNext()) {
+            MealPortion portion = iterator.next();
+            if (portion.getMealType().getDurability() == mealDurability && portion.getTimestamp().isBefore(time)) {
+                totalCost += portion.getMealType().getCost();
+                iterator.remove();
+            }
+        }
+        return totalCost;
     }
 }

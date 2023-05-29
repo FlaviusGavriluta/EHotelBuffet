@@ -36,4 +36,8 @@ public class Buffet {
         mealPortions.remove(mealPortion);
 
     }
+
+    public List<MealPortion> getMealPortions() {
+        return mealPortions;
+    }
 }

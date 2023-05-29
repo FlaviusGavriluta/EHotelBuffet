@@ -55,10 +55,18 @@ public class EHotelBuffetApplication {
                 new BuffetService.RefillRequest(MealType.CROISSANT, 1),
                 new BuffetService.RefillRequest(MealType.CEREAL, 1)
         ));
+
+        logger.info("There are " + buffet);
+
         if(buffetService.consumeFreshest(buffet, MealType.PANCAKE)) {
             logger.info("Guest ate a pancake");
             logger.info("There are " + buffet + " pancakes");
         }
+
+        logger.info("Waste cost: " + buffetService.collectWaste(buffet, MealType.CROISSANT.getDurability(), LocalDateTime.now()));
+
+        logger.info("There are " + buffet);
+
         logger.info("Buffet is closed");
     }
 }

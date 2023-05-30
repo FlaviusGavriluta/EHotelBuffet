@@ -15,14 +15,15 @@ public class GuestServiceImpl implements GuestService {
     private static final List<String> GUEST_NAMES = List.of("John", "Jane", "Jack", "Jill", "James", "Judy", "Joe", "Jenny", "Jim", "Jessica");
     private static final GuestType[] GUEST_TYPES = GuestType.values();
 
-
     @Override
     public Guest generateRandomGuest(LocalDate seasonStart, LocalDate seasonEnd) {
+        Guest generatedGuest;
         String name = getRandomName();
         GuestType guestType = getRandomGuestType();
         LocalDate checkIn = getRandomCheckInDate(seasonStart, seasonEnd);
         LocalDate checkOut = getRandomCheckOutDate(checkIn, seasonEnd);
-        return new Guest(name, guestType, checkIn, checkOut);
+        generatedGuest = new Guest(name, guestType, checkIn, checkOut);
+        return generatedGuest;
     }
 
     @Override
@@ -38,16 +39,58 @@ public class GuestServiceImpl implements GuestService {
 
     @Override
     public List<List<Guest>> splitGuestsIntoBreakfastGroups(List<Guest> guests) {
+        List<List<Guest>> breakfastGroups = new ArrayList<>();
         int breakfastCycles = 8;
-        List<List<Guest>> breakfastGroups  = new ArrayList<>(Collections.nCopies(breakfastCycles, new ArrayList<>()));
+        // Shuffle the guest list randomly
         Collections.shuffle(guests);
-        int currentCycle = 0;
-        for (Guest guest : guests) {
-            breakfastGroups.get(currentCycle).add(guest);
-            currentCycle = (currentCycle + 1) % breakfastCycles;
+        // Initialize the breakfast groups with empty lists
+        for (int i = 0; i < breakfastCycles; i++) {
+            breakfastGroups.add(new ArrayList<>());
         }
+        for (Guest guest : guests) {
+            // Generate a random cycle index for the guest
+            int cycleIndex = random.nextInt(breakfastCycles);
+            // Check if the cycle is already populated with guests
+            List<Guest> cycleGuests = breakfastGroups.get(cycleIndex);
+
+            cycleGuests.add(guest);
+
+        }
+
         return breakfastGroups;
     }
+
+
+//    @Override
+//    public List<List<Guest>> splitGuestsIntoBreakfastGroups(List<Guest> guests) {
+//        int breakfastCycles = 8;
+//        int[] cyclesNumbers = new int[breakfastCycles];
+//        int guestsNumber = guests.size() / 2;
+//        int cyclesNumbersIndex = 0;
+//        while (guestsNumber > 0) {
+//            int oneCycleGuestsNumber = random.nextInt(guestsNumber) + 1;
+//            cyclesNumbers[cyclesNumbersIndex] = oneCycleGuestsNumber;
+//            guestsNumber -= oneCycleGuestsNumber;
+//            cyclesNumbersIndex++;
+//        }
+//        List<List<Guest>> breakfastGroups = new ArrayList<>();
+//        //Collections.shuffle(guests);
+//        List<Guest> currentGroup = new ArrayList<>();
+//        cyclesNumbersIndex = 0;
+//        int oneCycleGuestCounter = 0;
+//        for (Guest guest : guests) {
+//            if (cyclesNumbers[cyclesNumbersIndex] > 0 && oneCycleGuestCounter < cyclesNumbers[cyclesNumbersIndex]) {
+//                currentGroup.add(guest);
+//                oneCycleGuestCounter++;
+//            } else {
+//                cyclesNumbersIndex++;
+//                breakfastGroups.add(currentGroup);
+//                currentGroup = new ArrayList<>();
+//                oneCycleGuestCounter = 0;
+//            }
+//        }
+//        return breakfastGroups;
+//    }
 
     public String getRandomName() {
         return GUEST_NAMES.get(random.nextInt(GUEST_NAMES.size()));

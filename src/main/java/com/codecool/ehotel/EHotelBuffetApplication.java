@@ -31,9 +31,13 @@ public class EHotelBuffetApplication {
         List<Guest> allGuests = new ArrayList<>();
         LocalDate seasonStart = LocalDate.of(2023, 6, 1);
         LocalDate seasonEnd = LocalDate.of(2023, 9, 30);
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 70; i++) {
             Guest guest = guestService.generateRandomGuest(seasonStart, seasonEnd);
-            allGuests.add(guest);
+            if (!allGuests.contains(guest)) {
+                allGuests.add(guest);
+            } else {
+                i--;
+            }
         }
         LocalDate targetDate = LocalDate.of(2023, 7, 15);
         List<Guest> guestForADay = guestService.getGuestsForDay(allGuests, targetDate);
@@ -68,10 +72,9 @@ public class EHotelBuffetApplication {
         logger.info("There are " + buffet);
 
         GuestService guestService1 = new GuestServiceImpl();
-       for(int i=0;i<guestService1.splitGuestsIntoBreakfastGroups(guestForADay).size();i++){
-           logger.info("Guests for breakfast: " + guestService1.splitGuestsIntoBreakfastGroups(guestForADay).get(i));
-       }
-
+        for (int i = 0; i < guestService1.splitGuestsIntoBreakfastGroups(guestForADay).size(); i++) {
+            logger.info("There are Guests for breakfast cycle" + i + ": " + guestService1.splitGuestsIntoBreakfastGroups(guestForADay).get(i));
+        }
         logger.info("Buffet is closed");
     }
 }

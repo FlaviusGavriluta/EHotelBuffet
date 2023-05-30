@@ -3,6 +3,7 @@ package com.codecool.ehotel;
 import com.codecool.ehotel.model.Guest;
 import com.codecool.ehotel.model.MealPortion;
 import com.codecool.ehotel.model.MealType;
+import com.codecool.ehotel.service.breakfast.BreakfastManager;
 import com.codecool.ehotel.service.buffet.BuffetService;
 import com.codecool.ehotel.service.buffet.BuffetServiceImpl;
 import com.codecool.ehotel.service.guest.GuestService;
@@ -48,33 +49,26 @@ public class EHotelBuffetApplication {
         // Run breakfast buffet
         logger.info("Buffet is open");
         Buffet buffet = new Buffet();
-        BuffetService buffetService = new BuffetServiceImpl();
-        buffetService.refillBuffet(buffet, List.of(
-                new BuffetService.RefillRequest(MealType.PANCAKE, 1),
-                new BuffetService.RefillRequest(MealType.CROISSANT, 1),
-                new BuffetService.RefillRequest(MealType.CEREAL, 1)
-        ));
-        buffetService.refillBuffet(buffet, List.of(
-                new BuffetService.RefillRequest(MealType.PANCAKE, 1),
-                new BuffetService.RefillRequest(MealType.CROISSANT, 1),
-                new BuffetService.RefillRequest(MealType.CEREAL, 1)
-        ));
+        BreakfastManager.serve(guestService.splitGuestsIntoBreakfastGroups(guestForADay), buffet);
 
+//
+//        logger.info("There are " + buffet);
+//
+//        if (buffetService.consumeFreshest(buffet, MealType.PANCAKE)) {
+//            logger.info("Guest ate a pancake");
+//            logger.info("There are " + buffet + " pancakes");
+//        }
+//
+//        logger.info("Waste cost: " + buffetService.collectWaste(buffet, MealType.CROISSANT.getDurability(), LocalDateTime.now()));
+//
         logger.info("There are " + buffet);
-
-        if (buffetService.consumeFreshest(buffet, MealType.PANCAKE)) {
-            logger.info("Guest ate a pancake");
-            logger.info("There are " + buffet + " pancakes");
-        }
-
-        logger.info("Waste cost: " + buffetService.collectWaste(buffet, MealType.CROISSANT.getDurability(), LocalDateTime.now()));
-
-        logger.info("There are " + buffet);
-
-        GuestService guestService1 = new GuestServiceImpl();
-        for (int i = 0; i < guestService1.splitGuestsIntoBreakfastGroups(guestForADay).size(); i++) {
-            logger.info("There are Guests for breakfast cycle" + i + ": " + guestService1.splitGuestsIntoBreakfastGroups(guestForADay).get(i));
-        }
+//
+//        GuestService guestService1 = new GuestServiceImpl();
+//
+//        for (int i = 0; i < guestService1.splitGuestsIntoBreakfastGroups(guestForADay).size(); i++) {
+//            logger.info("There are Guests for breakfast cycle" + i + ": " + guestService1.splitGuestsIntoBreakfastGroups(guestForADay).get(i));
+//        }
         logger.info("Buffet is closed");
+
     }
 }

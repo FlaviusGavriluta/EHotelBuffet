@@ -12,4 +12,9 @@ public record MealPortion(MealType mealType, LocalDateTime timestamp){
     public LocalDateTime getTimestamp() {
         return timestamp;
     }
+
+    @Override
+    public String toString() {
+        return mealType.toString();
+    }
 }

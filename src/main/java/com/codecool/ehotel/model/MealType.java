@@ -3,17 +3,7 @@ package com.codecool.ehotel.model;
 import static com.codecool.ehotel.model.MealDurability.*;
 
 public enum MealType {
-    SCRAMBLED_EGGS (70, SHORT),
-    SUNNY_SIDE_UP (70, SHORT),
-    FRIED_SAUSAGE(100, SHORT),
-    FRIED_BACON(70, SHORT),
-    PANCAKE(40, SHORT),
-    CROISSANT(40, SHORT),
-    MASHED_POTATO(20, MEDIUM),
-    MUFFIN(20, MEDIUM),
-    BUN(10, MEDIUM),
-    CEREAL(30, LONG),
-    MILK(10, LONG);
+    SCRAMBLED_EGGS(70, SHORT), SUNNY_SIDE_UP(70, SHORT), FRIED_SAUSAGE(100, SHORT), FRIED_BACON(70, SHORT), PANCAKE(40, SHORT), CROISSANT(40, SHORT), MASHED_POTATO(20, MEDIUM), MUFFIN(20, MEDIUM), BUN(10, MEDIUM), CEREAL(30, LONG), MILK(10, LONG);
 
     private int cost;
     private MealDurability mealDurability;
@@ -29,5 +19,11 @@ public enum MealType {
 
     public MealDurability getDurability() {
         return mealDurability;
+    }
+
+
+    @Override
+    public String toString() {
+        return MealType.this.name();
     }
 }

@@ -5,7 +5,6 @@ import com.codecool.ehotel.model.GuestType;
 import com.codecool.ehotel.service.guest.GuestService;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 
@@ -59,38 +58,6 @@ public class GuestServiceImpl implements GuestService {
 
         return breakfastGroups;
     }
-
-
-//    @Override
-//    public List<List<Guest>> splitGuestsIntoBreakfastGroups(List<Guest> guests) {
-//        int breakfastCycles = 8;
-//        int[] cyclesNumbers = new int[breakfastCycles];
-//        int guestsNumber = guests.size() / 2;
-//        int cyclesNumbersIndex = 0;
-//        while (guestsNumber > 0) {
-//            int oneCycleGuestsNumber = random.nextInt(guestsNumber) + 1;
-//            cyclesNumbers[cyclesNumbersIndex] = oneCycleGuestsNumber;
-//            guestsNumber -= oneCycleGuestsNumber;
-//            cyclesNumbersIndex++;
-//        }
-//        List<List<Guest>> breakfastGroups = new ArrayList<>();
-//        //Collections.shuffle(guests);
-//        List<Guest> currentGroup = new ArrayList<>();
-//        cyclesNumbersIndex = 0;
-//        int oneCycleGuestCounter = 0;
-//        for (Guest guest : guests) {
-//            if (cyclesNumbers[cyclesNumbersIndex] > 0 && oneCycleGuestCounter < cyclesNumbers[cyclesNumbersIndex]) {
-//                currentGroup.add(guest);
-//                oneCycleGuestCounter++;
-//            } else {
-//                cyclesNumbersIndex++;
-//                breakfastGroups.add(currentGroup);
-//                currentGroup = new ArrayList<>();
-//                oneCycleGuestCounter = 0;
-//            }
-//        }
-//        return breakfastGroups;
-//    }
 
     public String getRandomName() {
         return GUEST_NAMES.get(random.nextInt(GUEST_NAMES.size()));

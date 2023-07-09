@@ -1,7 +1,6 @@
 package com.codecool.ehotel;
 
 import com.codecool.ehotel.model.Guest;
-import com.codecool.ehotel.model.MealPortion;
 import com.codecool.ehotel.model.MealType;
 import com.codecool.ehotel.service.buffet.BuffetService;
 import com.codecool.ehotel.service.buffet.BuffetServiceImpl;
@@ -11,13 +10,10 @@ import com.codecool.ehotel.service.logger.ConsoleLogger;
 import com.codecool.ehotel.service.logger.Logger;
 import com.codecool.ehotel.model.Buffet;
 
-import java.nio.Buffer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 public class EHotelBuffetApplication {
 

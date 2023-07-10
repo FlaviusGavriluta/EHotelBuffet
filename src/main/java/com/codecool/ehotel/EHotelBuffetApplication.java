@@ -17,9 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EHotelBuffetApplication {
-
     public static void main(String[] args) {
-
         Logger logger = new ConsoleLogger();
         logger.info("EHotel Buffet Application started");
         // Initialize services
@@ -46,25 +44,7 @@ public class EHotelBuffetApplication {
         logger.info("Buffet is open");
         Buffet buffet = new Buffet();
         BreakfastManager.serve(guestService.splitGuestsIntoBreakfastGroups(guestForADay), buffet);
-
-//
-//        logger.info("There are " + buffet);
-//
-//        if (buffetService.consumeFreshest(buffet, MealType.PANCAKE)) {
-//            logger.info("Guest ate a pancake");
-//            logger.info("There are " + buffet + " pancakes");
-//        }
-//
-//        logger.info("Waste cost: " + buffetService.collectWaste(buffet, MealType.CROISSANT.getDurability(), LocalDateTime.now()));
-//
         logger.info("There are " + buffet);
-//
-//        GuestService guestService1 = new GuestServiceImpl();
-//
-//        for (int i = 0; i < guestService1.splitGuestsIntoBreakfastGroups(guestForADay).size(); i++) {
-//            logger.info("There are Guests for breakfast cycle" + i + ": " + guestService1.splitGuestsIntoBreakfastGroups(guestForADay).get(i));
-//        }
         logger.info("Buffet is closed");
-
     }
 }

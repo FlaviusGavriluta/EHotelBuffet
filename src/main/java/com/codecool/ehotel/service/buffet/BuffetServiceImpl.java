@@ -31,6 +31,12 @@ public class BuffetServiceImpl implements BuffetService {
     }
 
     @Override
+    public void removeMealPortion(Buffet buffet, MealPortion mealPortion) {
+        List<MealPortion> mealPortions = buffet.getMealPortions();
+        mealPortions.remove(mealPortion);
+    }
+
+    @Override
     public boolean consumeFreshest(Buffet buffet, MealType mealType) {
         List<MealPortion> mealPortionsByType = buffet.getMealPortionsByType(mealType);
         if (!mealPortionsByType.isEmpty()) {

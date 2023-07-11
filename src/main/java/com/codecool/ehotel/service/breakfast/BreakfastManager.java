@@ -8,7 +8,6 @@ import com.codecool.ehotel.service.logger.Logger;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -36,7 +35,7 @@ public class BreakfastManager {
         }
 
         // Discard all SHORT and MEDIUM durability meals at the end of the day
-        discardNonLongDurabilityMeals(buffet, buffetService);
+        discardNonLongDurabilityMeals(buffet);
     }
 
     private static void refillBuffet(Buffet buffet, BuffetService buffetService) {
@@ -93,17 +92,10 @@ public class BreakfastManager {
         }
     }
 
-    private static void discardNonLongDurabilityMeals(Buffet buffet, BuffetService buffetService) {
+    private static void discardNonLongDurabilityMeals(Buffet buffet) {
         List<MealPortion> mealPortions = buffet.getMealPortions();
-        Iterator<MealPortion> iterator = mealPortions.iterator();
 
-        while (iterator.hasNext()) {
-            MealPortion mealPortion = iterator.next();
-
-            if (mealPortion.getMealType().getDurability() != MealDurability.LONG) {
-                iterator.remove();
-            }
-        }
+        mealPortions.removeIf(mealPortion -> mealPortion.getMealType().getDurability() != MealDurability.LONG);
     }
 
 }

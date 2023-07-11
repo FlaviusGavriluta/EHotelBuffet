@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Random;
 
 public class BreakfastManager {
+    public static int unhappyGuests;
+    private double costOfFoodWaste;
     public static void serve(List<List<Guest>> guests, Buffet buffet) {
         Logger logger = new ConsoleLogger();
         BuffetService buffetService = new BuffetServiceImpl();
@@ -74,6 +76,7 @@ public class BreakfastManager {
             }
 
             if (!foundPreferredMeal) {
+                unhappyGuests++;
                 System.out.println(guest.name() + " couldn't find any of their preferred meals and went unhappy");
             }
         }

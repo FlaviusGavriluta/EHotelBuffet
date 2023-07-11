@@ -45,6 +45,7 @@ public class EHotelBuffetApplication {
         Buffet buffet = new Buffet();
         BreakfastManager.serve(guestService.splitGuestsIntoBreakfastGroups(guestForADay), buffet);
         logger.info("There are " + buffet);
+        logger.info("Number of unhappy guests is : " + BreakfastManager.unhappyGuests);
         logger.info("Buffet is closed");
     }
 }

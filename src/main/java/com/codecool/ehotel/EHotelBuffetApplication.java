@@ -46,6 +46,7 @@ public class EHotelBuffetApplication {
         BreakfastManager.serve(guestService.splitGuestsIntoBreakfastGroups(guestForADay), buffet);
         logger.info("There are " + buffet);
         logger.info("Number of unhappy guests is : " + BreakfastManager.unhappyGuests);
+        logger.info("The cost of food waste is : " + BreakfastManager.costOfFoodWaste);
         logger.info("Buffet is closed");
     }
 }

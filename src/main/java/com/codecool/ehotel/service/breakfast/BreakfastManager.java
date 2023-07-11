@@ -21,7 +21,6 @@ public class BreakfastManager {
         Logger logger = new ConsoleLogger();
         BuffetService buffetService = new BuffetServiceImpl();
 
-
         for (List<Guest> guestGroup : guests) {
             // Phase 1: Refill buffet supply
             refillBuffet(buffet, buffetService, currentTime);
@@ -33,22 +32,6 @@ public class BreakfastManager {
             logger.info("The buffet after: " + buffet);
 
             // Phase 3: Discard old meals
-//            if (cycleCount % 3 == 0) {
-//                discardOldMeals(buffet, buffetService);
-//            }
-//            for (MealPortion mealPortion : buffet.getMealPortions()) {
-//                if (mealPortion.getTimestamp().isBefore(currentTime.plusMinutes(90))) {
-//                    discardOldMeals(buffet, buffetService, currentTime);
-//                    System.out.println("Discarded " + mealPortion.getMealType().name());
-//                }
-//            }
-//            for (MealPortion mealPortion : buffet.getMealPortions()) {
-//                if (mealPortion.getTimestamp().isBefore(currentTime.minusMinutes(90))) {
-//                    discardOldMeals(buffet, buffetService, currentTime);
-//                    System.out.println("Discarded " + mealPortion.getMealType().name());
-//                }
-//            }
-
             discardOldMeals(buffet, buffetService, currentTime);
         }
 
@@ -74,7 +57,6 @@ public class BreakfastManager {
 
             refillRequests.add(new BuffetService.RefillRequest(randomMealType, randomAmount));
         }
-
         return refillRequests;
     }
 
@@ -82,7 +64,6 @@ public class BreakfastManager {
         for (Guest guest : guests) {
             List<MealType> mealPreferences = guest.guestType().getMealPreferences();
             boolean foundPreferredMeal = false;
-
             for (MealType mealType : mealPreferences) {
                 if (buffetService.consumeFreshest(buffet, mealType)) {
                     System.out.println(guest.name() + " ate " + mealType);
@@ -90,14 +71,12 @@ public class BreakfastManager {
                     break; // Exit the loop if a preferred meal is found
                 }
             }
-
             if (!foundPreferredMeal) {
                 unhappyGuests++;
                 System.out.println(guest.name() + " couldn't find any of their preferred meals and went unhappy");
             }
         }
     }
-
 
     private static void discardOldMeals(Buffet buffet, BuffetService buffetService, LocalDateTime currentTime) {
         List<MealPortion> mealPortions = buffet.getMealPortions();
@@ -113,7 +92,7 @@ public class BreakfastManager {
             if (mealPortion.getMealType().getDurability() == MealDurability.SHORT
                     && mealPortion.getTimestamp().plusMinutes(90).isBefore(currentTime)) {
                 System.out.println("Discarded meal: " + mealPortion.mealType().name());
-               // buffetService.removeMealPortion(buffet, mealPortion);
+                // buffetService.removeMealPortion(buffet, mealPortion);
                 mealsToDiscard.add(mealPortion);
             }
         }
@@ -137,9 +116,4 @@ public class BreakfastManager {
             }
         }
     }
-
-    private static int getOptimalPortions(Buffet buffet, List<Guest> guests, int cyclesLeft, double costOfUnhappyGuest) {
-        return 0;
-    }
-
 }

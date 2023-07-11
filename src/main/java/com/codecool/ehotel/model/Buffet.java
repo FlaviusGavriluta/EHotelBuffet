@@ -24,7 +24,6 @@ public class Buffet {
                 .collect(Collectors.toList());
     }
 
-
     @Override
     public String toString() {
         return "Buffet{" +
@@ -34,7 +33,6 @@ public class Buffet {
 
     public void removeMealPortion(MealPortion mealPortion) {
         mealPortions.remove(mealPortion);
-
     }
 
     public List<MealPortion> getMealPortions() {

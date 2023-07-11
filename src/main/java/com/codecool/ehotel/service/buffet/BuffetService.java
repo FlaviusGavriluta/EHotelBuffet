@@ -10,7 +10,7 @@ import java.util.Collection;
 
 public interface BuffetService {
 
-    void refillBuffet(Buffet buffet, Collection<RefillRequest> refillRequests);
+    void refillBuffet(Buffet buffet, Collection<RefillRequest> refillRequests, LocalDateTime refillTimestamp);
 
     void removeMealPortion(Buffet buffet, MealPortion mealPortion);
 

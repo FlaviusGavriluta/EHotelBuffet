@@ -15,9 +15,9 @@ public class BuffetServiceImpl implements BuffetService {
 
 
     @Override
-    public void refillBuffet(Buffet buffet, Collection<RefillRequest> refillRequests) {
+    public void refillBuffet(Buffet buffet, Collection<RefillRequest> refillRequests, LocalDateTime refillTimestamp) {
         List<MealPortion> mealPortions = new LinkedList<>();
-        LocalDateTime refillTimestamp = LocalDateTime.now();
+//        LocalDateTime refillTimestamp = LocalDateTime.now();
 
         for (RefillRequest refillRequest : refillRequests) {
             MealType mealType = refillRequest.mealType();
@@ -32,8 +32,7 @@ public class BuffetServiceImpl implements BuffetService {
 
     @Override
     public void removeMealPortion(Buffet buffet, MealPortion mealPortion) {
-        List<MealPortion> mealPortions = buffet.getMealPortions();
-        mealPortions.remove(mealPortion);
+        buffet.removeMealPortion(mealPortion);
     }
 
     @Override

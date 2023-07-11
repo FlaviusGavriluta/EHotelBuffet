@@ -6,9 +6,7 @@ import com.codecool.ehotel.service.buffet.BuffetServiceImpl;
 import com.codecool.ehotel.service.logger.ConsoleLogger;
 import com.codecool.ehotel.service.logger.Logger;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -18,16 +16,16 @@ public class BreakfastManager {
     private static LocalDateTime currentTime = LocalDateTime.now();
     public static int unhappyGuests;
     public static double costOfFoodWaste;
+
     public static void serve(List<List<Guest>> guests, Buffet buffet) {
         Logger logger = new ConsoleLogger();
         BuffetService buffetService = new BuffetServiceImpl();
-        int cycleCount = 0;
+
 
         for (List<Guest> guestGroup : guests) {
-            cycleCount++;
-
             // Phase 1: Refill buffet supply
-            refillBuffet(buffet, buffetService);
+            refillBuffet(buffet, buffetService, currentTime);
+            currentTime = currentTime.plusMinutes(30);
 
             // Phase 2: Consume breakfast
             logger.info("The buffet before: " + buffet);
@@ -44,22 +42,23 @@ public class BreakfastManager {
 //                    System.out.println("Discarded " + mealPortion.getMealType().name());
 //                }
 //            }
-            for (MealPortion mealPortion : buffet.getMealPortions()) {
-                if (mealPortion.getTimestamp().isBefore(currentTime.minusMinutes(90))) {
-                    discardOldMeals(buffet, buffetService, currentTime);
-                    System.out.println("Discarded " + mealPortion.getMealType().name());
-                }
-            }
-            currentTime.plusMinutes(30);
+//            for (MealPortion mealPortion : buffet.getMealPortions()) {
+//                if (mealPortion.getTimestamp().isBefore(currentTime.minusMinutes(90))) {
+//                    discardOldMeals(buffet, buffetService, currentTime);
+//                    System.out.println("Discarded " + mealPortion.getMealType().name());
+//                }
+//            }
+
+            discardOldMeals(buffet, buffetService, currentTime);
         }
 
         // Discard all SHORT and MEDIUM durability meals at the end of the day
         discardNonLongDurabilityMeals(buffet);
     }
 
-    private static void refillBuffet(Buffet buffet, BuffetService buffetService) {
+    private static void refillBuffet(Buffet buffet, BuffetService buffetService, LocalDateTime currentTime) {
         List<BuffetService.RefillRequest> refillRequests = generateRefillRequests();
-        buffetService.refillBuffet(buffet, refillRequests);
+        buffetService.refillBuffet(buffet, refillRequests, currentTime);
     }
 
     private static List<BuffetService.RefillRequest> generateRefillRequests() {
@@ -102,14 +101,26 @@ public class BreakfastManager {
 
     private static void discardOldMeals(Buffet buffet, BuffetService buffetService, LocalDateTime currentTime) {
         List<MealPortion> mealPortions = buffet.getMealPortions();
-
+        List<MealPortion> mealsToDiscard = new ArrayList<>();
         for (MealPortion mealPortion : mealPortions) {
+            // Discard SHORT durability meals that are older than 90 minutes
+            System.out.println("Current: " + currentTime);
+            System.out.println("Meal: " + mealPortion.getTimestamp());
+            System.out.println("Meal type: " + mealPortion.getMealType().name());
+            System.out.println("Durability: " + mealPortion.getMealType().getDurability());
+            System.out.println();
+
             if (mealPortion.getMealType().getDurability() == MealDurability.SHORT
-                    && mealPortion.getTimestamp().isBefore(currentTime.minusMinutes(30 * 3))) {
-                costOfFoodWaste += mealPortion.getMealType().getCost();
+                    && mealPortion.getTimestamp().plusMinutes(90).isBefore(currentTime)) {
                 System.out.println("Discarded meal: " + mealPortion.mealType().name());
-                buffetService.removeMealPortion(buffet, mealPortion);
+               // buffetService.removeMealPortion(buffet, mealPortion);
+                mealsToDiscard.add(mealPortion);
             }
+        }
+        // Remove the collected meals from the buffet
+        for (MealPortion meal : mealsToDiscard) {
+            buffet.removeMealPortion(meal);
+            costOfFoodWaste += meal.getMealType().getCost();
         }
     }
 

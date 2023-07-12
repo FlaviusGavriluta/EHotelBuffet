@@ -8,11 +8,9 @@ import com.codecool.ehotel.service.logger.ConsoleLogger;
 import com.codecool.ehotel.service.logger.Logger;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.codecool.ehotel.service.breakfast.utils.ConsumeBreakfast.consumeBreakfast;
-import static com.codecool.ehotel.service.breakfast.utils.GetOptimalPortions.getOptimalPortions;
 import static com.codecool.ehotel.service.breakfast.utils.RefillBuffet.refillBuffet;
 
 public class BreakfastManager {

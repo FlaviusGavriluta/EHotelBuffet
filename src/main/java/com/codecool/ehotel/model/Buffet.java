@@ -1,46 +1,50 @@
 package com.codecool.ehotel.model;
 
-import java.util.Comparator;
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Buffet {
-    private final List<MealPortion> mealPortions; // Lista de porții de mâncare
-    private final List<Guest> guests; // Lista de oaspeți
+    private Map<MealType, List<MealPortion>> mealPortions;
+    private final List<Guest> guests;
 
     public Buffet(List<Guest> guests) {
-        this.mealPortions = new ArrayList<>(); // Inițializat lista de porții de mâncare
-        this.guests = guests; // Inițializat lista de oaspeți
+        this.mealPortions = new HashMap<>();
+        this.guests = guests;
+        initializeMealPortions();
+    }
+
+    private void initializeMealPortions() {
+        for (MealType mealType : MealType.values()) {
+            mealPortions.put(mealType, new ArrayList<>());
+        }
+        for (Guest guest : guests) {
+            for (MealType mealType : guest.guestType().getMealPreferences()) {
+                mealPortions.get(mealType).add(new MealPortion(mealType, LocalDateTime.now()));
+            }
+        }
     }
 
     public void addMealPortion(MealPortion mealPortion) {
-        mealPortions.add(mealPortion);
+        MealType mealType = mealPortion.getMealType();
+        mealPortions.get(mealType).add(mealPortion);
     }
 
     public void removeMealPortion(MealPortion mealPortion) {
-        mealPortions.remove(mealPortion);
-    }
-
-    public List<MealPortion> getMealPortions() {
-        return mealPortions;
+        MealType mealType = mealPortion.getMealType();
+        mealPortions.get(mealType).remove(mealPortion);
     }
 
     public List<MealPortion> getMealPortionsByType(MealType mealType) {
-        return mealPortions.stream()
-                .filter(portion -> portion.mealType().equals(mealType))
-                .sorted(Comparator.comparing(MealPortion::timestamp))
-                .collect(Collectors.toList());
+        return mealPortions.get(mealType);
     }
 
     public int getAvailablePortions(MealType mealType) {
-        int availablePortions = 0;
-        for (MealPortion mealPortion : mealPortions) {
-            if (mealPortion.getMealType() == mealType && !mealPortion.isConsumed()) {
-                availablePortions++;
-            }
-        }
-        return availablePortions;
+        List<MealPortion> portions = mealPortions.getOrDefault(mealType, new ArrayList<>());
+        return portions.size();
     }
 
     public int calculatePotentialFoodWaste(MealType mealType, int refillAmount) {
@@ -62,11 +66,25 @@ public class Buffet {
     public int getExpectedGuestsForMealType(MealType mealType) {
         int expectedGuests = 0;
         for (Guest guest : guests) {
-                if (guest.guestType().getMealPreferences().contains(mealType)) {
-                    expectedGuests++;
-                }
-                    }
+            if (guest.guestType().getMealPreferences().contains(mealType)) {
+                expectedGuests++;
+            }
+        }
         return expectedGuests;
+    }
+
+    public void setRefillAmount(MealType mealType, int refillAmount) {
+        List<MealPortion> portions = mealPortions.getOrDefault(mealType, new ArrayList<>());
+        int currentPortions = portions.size();
+        if (currentPortions > refillAmount) {
+            for (int i = currentPortions - 1; i >= refillAmount; i--) {
+                portions.remove(i);
+            }
+        } else if (currentPortions < refillAmount) {
+            for (int i = currentPortions; i < refillAmount; i++) {
+                portions.add(new MealPortion(mealType, LocalDateTime.now()));
+            }
+        }
     }
 
     @Override

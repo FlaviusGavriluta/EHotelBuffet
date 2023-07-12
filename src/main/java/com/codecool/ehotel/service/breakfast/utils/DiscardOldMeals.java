@@ -16,11 +16,11 @@ public class DiscardOldMeals {
         List<MealPortion> mealsToDiscard = new ArrayList<>();
         for (MealPortion mealPortion : mealPortions) {
             // Discard SHORT durability meals that are older than 90 minutes
-            System.out.println("Current: " + currentTime);
-            System.out.println("Meal: " + mealPortion.getTimestamp());
-            System.out.println("Meal type: " + mealPortion.getMealType().name());
-            System.out.println("Durability: " + mealPortion.getMealType().getDurability());
-            System.out.println();
+//            System.out.println("Current: " + currentTime);
+//            System.out.println("Meal: " + mealPortion.getTimestamp());
+//            System.out.println("Meal type: " + mealPortion.getMealType().name());
+//            System.out.println("Durability: " + mealPortion.getMealType().getDurability());
+//            System.out.println();
 
             if (mealPortion.getMealType().getDurability() == MealDurability.SHORT
                     && mealPortion.getTimestamp().plusMinutes(90).isBefore(currentTime)) {

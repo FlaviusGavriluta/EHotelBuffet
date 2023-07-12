@@ -8,6 +8,7 @@ import com.codecool.ehotel.service.logger.ConsoleLogger;
 import com.codecool.ehotel.service.logger.Logger;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.codecool.ehotel.service.breakfast.utils.ConsumeBreakfast.consumeBreakfast;
@@ -21,20 +22,24 @@ public class BreakfastManager {
     public static void serve(List<List<Guest>> guests, Buffet buffet) {
         Logger logger = new ConsoleLogger();
         BuffetService buffetService = new BuffetServiceImpl();
-        List<List<Guest>> guestsCopy = guests;
         int cycles = 1;
         double value = 0;
+        List<List<Guest>> guestsCopy = new ArrayList<>();
+        for (List<Guest> guestList : guests) {
+            List<Guest> innerListCopy = new ArrayList<>(guestList);
+            guestsCopy.add(innerListCopy);
+        }
         for (List<Guest> guestGroup : guests) {
             // Phase 1: Refill buffet supply
-            //getOptimalPortions(buffet, guestsCopy, cycles, value);
-            guestsCopy.remove(guests);
+            getOptimalPortions(buffet, guestsCopy, cycles, value);
+            guestsCopy.remove(guestGroup);
             cycles++;
             refillBuffet(buffet, buffetService, currentTime);
             currentTime = currentTime.plusMinutes(30);
             // Phase 2: Consume breakfast
-            logger.info("The buffet before: " + buffet);
+            //logger.info("The buffet before: " + buffet);
             consumeBreakfast(guestGroup, buffet, buffetService);
-            logger.info("The buffet after: " + buffet);
+            //logger.info("The buffet after: " + buffet);
 
             // Phase 3: Discard old meal
             DiscardOldMeals.discardOldMeals(buffet, buffetService, currentTime);

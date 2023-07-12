@@ -36,7 +36,7 @@ public class BreakfastManager {
             consumeBreakfast(guestGroup, buffet, buffetService);
             logger.info("The buffet after: " + buffet);
 
-            // Phase 3: Discard old meals
+            // Phase 3: Discard old meal
             DiscardOldMeals.discardOldMeals(buffet, buffetService, currentTime);
         }
         // Discard all SHORT and MEDIUM durability meals at the end of the day

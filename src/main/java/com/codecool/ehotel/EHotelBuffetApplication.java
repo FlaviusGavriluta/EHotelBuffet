@@ -10,6 +10,7 @@ import com.codecool.ehotel.service.guest.GuestServiceImpl;
 import com.codecool.ehotel.service.logger.ConsoleLogger;
 import com.codecool.ehotel.service.logger.Logger;
 import com.codecool.ehotel.model.Buffet;
+import com.codecool.ehotel.model.MealType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,14 +19,15 @@ public class EHotelBuffetApplication {
     public static void main(String[] args) {
         Logger logger = new ConsoleLogger();
         logger.info("EHotel Buffet Application started");
-
-        // Initialize services
         GuestService guestService = new GuestServiceImpl();
         List<Guest> generateGuests = GuestGenerator.generateGuests(guestService); // Generate guests
+        Buffet buffet = new Buffet(generateGuests); // Initialize the buffet state
 
-        // Run breakfast buffet
-        logger.info("Buffet is open");
-        Buffet buffet = new Buffet(generateGuests);
+        // Set refill amounts for each meal type in the buffet
+        for (MealType mealType : MealType.values()) {
+            buffet.setRefillAmount(mealType, BuffetRefillOptimizer.runOptimization()[mealType.ordinal()]);
+        }
+
         LocalDate targetDate = LocalDate.of(2023, 7, 15);
         BreakfastManager.serve(guestService
                 .splitGuestsIntoBreakfastGroups(GuestGenerator

@@ -11,7 +11,7 @@ import com.codecool.ehotel.service.guest.GuestServiceImpl;
 import java.util.List;
 
 public class BuffetRefillOptimizer {
-    public static int[] getOptimalRefillAmounts() {
+    public static int[] runOptimization() {
         GuestService guestService = new GuestServiceImpl();
         List<Guest> generateGuests = GuestGenerator.generateGuests(guestService); // Generate guests
         Buffet buffet = new Buffet(generateGuests); // Initialize the buffet state
@@ -20,12 +20,9 @@ public class BuffetRefillOptimizer {
         int cyclesLeft = 8; // Cycles left for the day
         double costOfUnhappyGuest = 10.0; // Assumed cost of an unhappy guest
 
-        return GetOptimalPortions.getOptimalPortions(buffet, guestsToExpect, cyclesLeft, costOfUnhappyGuest);
+        int[] refillAmounts = GetOptimalPortions.getOptimalPortions(buffet, guestsToExpect, cyclesLeft, costOfUnhappyGuest);
 
-//        System.out.println("Refill Amounts:");
-//        for (MealType mealType : MealType.values()) {
-//            System.out.println(mealType + ": " + refillAmounts[mealType.ordinal()]);
-//        }
+        return refillAmounts;
     }
 
     public static int[] getOptimalPortions(Buffet buffet, int[] guestsToExpect, int cyclesLeft, double costOfUnhappyGuest) {

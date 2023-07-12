@@ -1,6 +1,5 @@
 package com.codecool.ehotel;
 
-import com.codecool.ehotel.model.Guest;
 import com.codecool.ehotel.service.breakfast.BreakfastManager;
 import com.codecool.ehotel.service.breakfast.utils.ConsumeBreakfast;
 import com.codecool.ehotel.service.guest.GuestGenerator;
@@ -11,8 +10,6 @@ import com.codecool.ehotel.service.logger.Logger;
 import com.codecool.ehotel.model.Buffet;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 public class EHotelBuffetApplication {
     public static void main(String[] args) {
@@ -20,15 +17,6 @@ public class EHotelBuffetApplication {
         logger.info("EHotel Buffet Application started");
         // Initialize services
         GuestService guestService = new GuestServiceImpl();
-        // Generate guests for the season
-        List<Guest> allGuests = new ArrayList<>();
-        LocalDate seasonStart = LocalDate.of(2023, 6, 1);
-        LocalDate seasonEnd = LocalDate.of(2023, 9, 30);
-
-        // Initialize services
-        guestService = new GuestServiceImpl();
-        // Generate guests for the season
-        allGuests = GuestGenerator.generateGuests(guestService);
 
         // Run breakfast buffet
         logger.info("Buffet is open");

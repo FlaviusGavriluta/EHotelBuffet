@@ -9,7 +9,8 @@ import java.util.List;
 
 public class ConsumeBreakfast {
     public static int unhappyGuests;
-        public static void consumeBreakfast(List<Guest> guests, Buffet buffet, BuffetService buffetService) {
+
+    public static void consumeBreakfast(List<Guest> guests, Buffet buffet, BuffetService buffetService) {
         for (Guest guest : guests) {
             List<MealType> mealPreferences = guest.guestType().getMealPreferences();
             boolean foundPreferredMeal = false;

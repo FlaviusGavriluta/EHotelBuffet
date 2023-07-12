@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-
 public class Buffet {
     private final List<MealPortion> mealPortions;
 

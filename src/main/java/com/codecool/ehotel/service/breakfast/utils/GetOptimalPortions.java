@@ -1,45 +1,70 @@
 package com.codecool.ehotel.service.breakfast.utils;
 
-import com.codecool.ehotel.model.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.codecool.ehotel.model.Buffet;
+import com.codecool.ehotel.model.MealType;
 
 public class GetOptimalPortions {
+    public static int[] getOptimalPortions(Buffet buffet, int[] guestsToExpect, int cyclesLeft, double costOfUnhappyGuest) {
+        int[] refillAmounts = new int[MealType.values().length];
 
-    public static List<List<MealType>> getOptimalPortions(Buffet buffet, List<List<Guest>> guestsOfTheDay, int cycleCount, double value) {
-        List<List<MealType>> allPreferenceList = new ArrayList<>();
-//        List<GuestType> guestTypes = new ArrayList<>();
-//
-//        for(List<Guest> guestList: guestsOfTheDay) {
-//            for(Guest guest2 : guestList) {
-//                guestTypes.add(guest2.guestType());
-//            }
-//
-//        }
-//        System.out.println(guestTypes);
-//        System.out.println(",,,,,,,,,,,,,,,");
-        //going through each breakfast cycle group
-        for (List<Guest> guestGroup : guestsOfTheDay) {
-            //each guest of current cycle
-            for (Guest guest : guestGroup) {
-            allPreferenceList.add(guest.guestType().getMealPreferences());
-             //   [ [1, 2, 3 ], [], [] ]
-            }
+        // Initialize refill amounts with the maximum possible value
+        for (MealType mealType : MealType.values()) {
+            refillAmounts[mealType.ordinal()] = guestsToExpect[mealType.ordinal()] * cyclesLeft;
         }
 
-        List<MealType> mediumAndLong = new ArrayList<>();
-        for (List<MealType> mealList : allPreferenceList) {
-//            System.out.println(mealList);
-//            System.out.println("............");
-            for ( MealType meal : mealList) {
-                if (meal.getDurability() == MealDurability.MEDIUM || meal.getDurability() == MealDurability.LONG ) {
-                 // mealList
+        // Calculate the initial cost based on maximum refill amounts
+        double initialCost = calculateCost(buffet, refillAmounts, costOfUnhappyGuest);
+
+        // Perform iterative optimization
+        boolean optimized = false;
+        while (!optimized) {
+            optimized = true;
+
+            // Try reducing refill amounts for each meal type
+            for (MealType mealType : MealType.values()) {
+                int currentRefillAmount = refillAmounts[mealType.ordinal()];
+
+                // Skip if the current refill amount is already 0
+                if (currentRefillAmount == 0) {
+                    continue;
+                }
+
+                // Reduce the refill amount by 1 and calculate the new cost
+                refillAmounts[mealType.ordinal()] = Math.max(0, currentRefillAmount - 1);
+                double newCost = calculateCost(buffet, refillAmounts, costOfUnhappyGuest);
+
+                // If the new cost is lower, keep the reduced refill amount
+                if (newCost < initialCost) {
+                    initialCost = newCost;
+                    optimized = false; // Continue optimization
+                } else {
+                    // Otherwise, revert the refill amount to the previous value
+                    refillAmounts[mealType.ordinal()] = currentRefillAmount;
                 }
             }
         }
 
-        return allPreferenceList;
+        return refillAmounts;
     }
 
+    private static double calculateCost(Buffet buffet, int[] refillAmounts, double costOfUnhappyGuest) {
+        double totalCost = 0;
+
+        // Calculate the cost of food waste and unhappy guests combined
+        for (MealType mealType : MealType.values()) {
+            int refillAmount = refillAmounts[mealType.ordinal()];
+
+            // Calculate the number of unhappy guests based on the refill amount
+            int unhappyGuests = buffet.calculateUnhappyGuests(mealType, refillAmount);
+
+            // Calculate the potential food waste if all portions are refilled
+            int potentialFoodWaste = buffet.calculatePotentialFoodWaste(mealType, refillAmount);
+
+            // Calculate the cost of food waste and unhappy guests for this meal type
+            double mealCost = (unhappyGuests * costOfUnhappyGuest) + potentialFoodWaste;
+            totalCost += mealCost;
+        }
+
+        return totalCost;
+    }
 }

@@ -6,9 +6,7 @@ import com.codecool.ehotel.model.GuestType;
 import java.time.LocalDate;
 import java.util.*;
 
-
 public class GuestServiceImpl implements GuestService {
-
     private static Random random = new Random();
     private static final List<String> GUEST_NAMES = List.of("John", "Jane", "Jack", "Jill", "James", "Judy", "Joe", "Jenny", "Jim", "Jessica");
     private static final GuestType[] GUEST_TYPES = GuestType.values();

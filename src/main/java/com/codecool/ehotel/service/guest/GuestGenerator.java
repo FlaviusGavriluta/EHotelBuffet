@@ -12,7 +12,7 @@ public class GuestGenerator {
         LocalDate seasonStart = LocalDate.of(2023, 6, 1);
         LocalDate seasonEnd = LocalDate.of(2023, 9, 30);
 
-        for (int i = 0; i < 70; i++) {
+        for (int i = 0; i < 15; i++) {
             Guest guest = guestService.generateRandomGuest(seasonStart, seasonEnd);
             if (!allGuests.contains(guest)) {
                 allGuests.add(guest);

@@ -16,9 +16,9 @@ public class DiscardNonLongDurabilityMeals {
         while (iterator.hasNext()) {
             MealPortion mealPortion = iterator.next();
 
-            if (mealPortion.getMealType().getDurability() != MealDurability.LONG) {
+            if (mealPortion.getMealType().getMealDurability() != MealDurability.LONG) {
                 iterator.remove();
-                BreakfastManager.costOfFoodWaste += mealPortion.getMealType().getCost();
+                BreakfastManager.costOfFoodWaste += mealPortion.getMealType().getMealCost();
             }
         }
     }

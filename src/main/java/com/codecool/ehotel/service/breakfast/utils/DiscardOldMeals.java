@@ -22,7 +22,7 @@ public class DiscardOldMeals {
 //            System.out.println("Durability: " + mealPortion.getMealType().getDurability());
 //            System.out.println();
 
-            if (mealPortion.getMealType().getDurability() == MealDurability.SHORT
+            if (mealPortion.getMealType().getMealDurability() == MealDurability.SHORT
                     && mealPortion.getTimestamp().plusMinutes(90).isBefore(currentTime)) {
                 System.out.println("Discarded meal: " + mealPortion.mealType().name());
                 mealsToDiscard.add(mealPortion);
@@ -31,7 +31,7 @@ public class DiscardOldMeals {
         // Remove the collected meals from the buffet
         for (MealPortion meal : mealsToDiscard) {
             buffet.removeMealPortion(meal);
-            BreakfastManager.costOfFoodWaste += meal.getMealType().getCost();
+            BreakfastManager.costOfFoodWaste += meal.getMealType().getMealCost();
         }
     }
 }

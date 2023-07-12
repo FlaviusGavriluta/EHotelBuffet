@@ -1,6 +1,7 @@
 package com.codecool.ehotel.model;
 
 import java.util.List;
+
 import static com.codecool.ehotel.model.MealType.*;
 
 public enum GuestType {

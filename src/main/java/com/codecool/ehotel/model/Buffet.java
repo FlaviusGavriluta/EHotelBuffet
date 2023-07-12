@@ -13,8 +13,8 @@ public class Buffet {
         this.mealPortions = new ArrayList<>();
     }
 
-    public void addMealPortion(List<MealPortion> portions) {
-        mealPortions.addAll(portions);
+    public void addMealPortion(MealPortion mealPortion) {
+        mealPortions.add(mealPortion);
     }
 
     public List<MealPortion> getMealPortionsByType(MealType mealType) {

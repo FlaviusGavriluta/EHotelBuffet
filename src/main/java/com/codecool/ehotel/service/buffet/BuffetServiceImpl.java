@@ -8,19 +8,16 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class BuffetServiceImpl implements BuffetService {
     @Override
     public void refillBuffet(Buffet buffet, Collection<RefillRequest> refillRequests, LocalDateTime refillTimestamp) {
         List<MealPortion> mealPortions = new LinkedList<>();
-        for (RefillRequest refillRequest : refillRequests) {
-            MealType mealType = refillRequest.mealType();
-            int amount = refillRequest.amount();
-            for (int i = 0; i < amount; i++) {
-                mealPortions.add(new MealPortion(mealType, refillTimestamp));
-            }
-        }
-        buffet.addMealPortion(mealPortions);
+        refillRequests.stream()
+                .flatMap(refillRequest -> IntStream.range(0, refillRequest.amount())
+                        .mapToObj(i -> new MealPortion(refillRequest.mealType(), refillTimestamp)))
+                .forEach(buffet::addMealPortion);
     }
 
     @Override

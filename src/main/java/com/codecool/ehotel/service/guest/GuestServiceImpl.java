@@ -50,11 +50,8 @@ public class GuestServiceImpl implements GuestService {
             int cycleIndex = random.nextInt(breakfastCycles);
             // Check if the cycle is already populated with guests
             List<Guest> cycleGuests = breakfastGroups.get(cycleIndex);
-
             cycleGuests.add(guest);
-
         }
-
         return breakfastGroups;
     }
 

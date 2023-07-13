@@ -5,7 +5,7 @@ import com.codecool.ehotel.model.MealType;
 
 public class GetOptimalPortions {
     public static int[] getOptimalPortions(Buffet buffet, int[] guestsToExpect, int cyclesLeft, double costOfUnhappyGuest) {
-        int[] refillAmounts = new int[MealType.values().length];
+        int[] refillAmounts = new int[MealType.values().length]; // Refill amounts for each meal type
 
         // Initialize refill amounts with the maximum possible value
         for (MealType mealType : MealType.values()) {

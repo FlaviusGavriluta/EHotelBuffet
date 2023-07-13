@@ -11,6 +11,35 @@ public class GuestServiceImpl implements GuestService {
     private static final List<String> GUEST_NAMES = List.of("John", "Jane", "Jack", "Jill", "James", "Judy", "Joe", "Jenny", "Jim", "Jessica");
     private static final GuestType[] GUEST_TYPES = GuestType.values();
 
+    public String getRandomName() {
+        return GUEST_NAMES.get(random.nextInt(GUEST_NAMES.size()));
+    }
+
+    public GuestType getRandomGuestType() {
+        return GUEST_TYPES[random.nextInt(GUEST_TYPES.length)];
+    }
+
+    private LocalDate getRandomCheckInDate(LocalDate seasonStart, LocalDate seasonEnd) {
+        int seasonLength = (int) seasonStart.until(seasonEnd, java.time.temporal.ChronoUnit.DAYS) + 1;
+        int randomStayLength = random.nextInt(7) + 1;
+        int maxCheckInDay = seasonLength - randomStayLength;
+        int randomCheckInDay = random.nextInt(maxCheckInDay + 1);
+        return seasonStart.plusDays(randomCheckInDay);
+    }
+
+    private LocalDate getRandomCheckOutDate(LocalDate checkIn, LocalDate seasonEnd) {
+        int maxStayLength = (int) checkIn.until(seasonEnd, java.time.temporal.ChronoUnit.DAYS) + 1;
+        int randomStayLength = random.nextInt(maxStayLength) + 1;
+        return checkIn.plusDays(randomStayLength);
+    }
+
+    public Guest generateRandomGuestOfType(GuestType guestType, LocalDate seasonStart, LocalDate seasonEnd) {
+        String name = getRandomName();
+        LocalDate checkIn = getRandomCheckInDate(seasonStart, seasonEnd);
+        LocalDate checkOut = getRandomCheckOutDate(checkIn, seasonEnd);
+        return new Guest(name, guestType, checkIn, checkOut);
+    }
+
     @Override
     public Guest generateRandomGuest(LocalDate seasonStart, LocalDate seasonEnd) {
         Guest generatedGuest;
@@ -51,27 +80,5 @@ public class GuestServiceImpl implements GuestService {
             cycleGuests.add(guest);
         }
         return breakfastGroups;
-    }
-
-    public String getRandomName() {
-        return GUEST_NAMES.get(random.nextInt(GUEST_NAMES.size()));
-    }
-
-    public GuestType getRandomGuestType() {
-        return GUEST_TYPES[random.nextInt(GUEST_TYPES.length)];
-    }
-
-    private LocalDate getRandomCheckInDate(LocalDate seasonStart, LocalDate seasonEnd) {
-        int seasonLength = (int) seasonStart.until(seasonEnd, java.time.temporal.ChronoUnit.DAYS) + 1;
-        int randomStayLength = random.nextInt(7) + 1;
-        int maxCheckInDay = seasonLength - randomStayLength;
-        int randomCheckInDay = random.nextInt(maxCheckInDay + 1);
-        return seasonStart.plusDays(randomCheckInDay);
-    }
-
-    private LocalDate getRandomCheckOutDate(LocalDate checkIn, LocalDate seasonEnd) {
-        int maxStayLength = (int) checkIn.until(seasonEnd, java.time.temporal.ChronoUnit.DAYS) + 1;
-        int randomStayLength = random.nextInt(maxStayLength) + 1;
-        return checkIn.plusDays(randomStayLength);
     }
 }

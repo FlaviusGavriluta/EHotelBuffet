@@ -8,8 +8,9 @@ public class GetOptimalPortions {
         int[] refillAmounts = new int[MealType.values().length]; // Refill amounts for each meal type
 
         // Initialize refill amounts with the maximum possible value
-        for (MealType mealType : MealType.values()) {
-            refillAmounts[mealType.ordinal()] = guestsToExpect[mealType.ordinal()] * cyclesLeft;
+        for (int i = 0; i < MealType.values().length; i++) {
+            MealType mealType = MealType.values()[i];
+            refillAmounts[i] = guestsToExpect[mealType.ordinal()] * cyclesLeft;
         }
 
         // Calculate the initial cost based on maximum refill amounts

@@ -1,9 +1,12 @@
 package com.codecool.ehotel.service.guest;
 
 import com.codecool.ehotel.model.Guest;
+import com.codecool.ehotel.model.GuestType;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,12 +19,22 @@ public class GuestServiceImpl implements GuestService {
 
     @Override
     public Guest generateRandomGuest(LocalDate seasonStart, LocalDate seasonEnd) {
-        // Implementați generarea aleatorie a unui oaspete în intervalul specificat
-        // și returnați obiectul Guest rezultat
-        // Exemplu de implementare:
-        // Guest randomGuest = ... // generați un obiect Guest aleator
-        // return randomGuest;
-        throw new UnsupportedOperationException("Method not implemented yet");
+        Random random = new Random();
+        int minStay = 1;
+        int maxStay = Math.min((int) ChronoUnit.DAYS.between(seasonStart, seasonEnd) + 1, 7);
+
+        String[] randomNames = {"John", "Emma", "Michael", "Sophia", "Daniel", "Olivia", "Levi", "Luke", "Jonathan", "Jayson", "Evan", "Elizabeth"};
+        GuestType[] guestTypes = GuestType.values();
+
+        String randomName = randomNames[random.nextInt(randomNames.length)];
+        GuestType randomGuestType = guestTypes[random.nextInt(guestTypes.length)];
+
+        long seasonLength = ChronoUnit.DAYS.between(seasonStart, seasonEnd) + 1;
+        long randomStay = minStay + random.nextInt(maxStay - minStay + 1);
+        LocalDate randomCheckIn = seasonStart.plusDays(random.nextInt((int) seasonLength - (int) randomStay + 1));
+        LocalDate randomCheckOut = randomCheckIn.plusDays(randomStay);
+
+        return new Guest(randomName, randomGuestType, randomCheckIn, randomCheckOut);
     }
 
     @Override

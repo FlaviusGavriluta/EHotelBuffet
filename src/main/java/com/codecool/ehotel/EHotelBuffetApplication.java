@@ -24,11 +24,13 @@ public class EHotelBuffetApplication {
     public static void main(String[] args) {
 
         Logger logger = new ConsoleLogger();
+        LocalDate targetDate = LocalDate.of(2023, 7, 15);
         logger.info("EHotel Buffet Application started");
         GuestService guestService = new GuestServiceImpl();
         List<Guest> generateGuests = GuestGenerator.generateGuests(guestService, 40, LocalDate.of(2023, 6, 1), LocalDate.of(2023, 9, 30)); // Generate guests
-        Buffet buffet = new Buffet(generateGuests); // Initialize the buffet state
-        LocalDate targetDate = LocalDate.of(2023, 7, 15);
+        List<Guest> guestsForToday = GuestGenerator.getGuestsForDay(generateGuests, guestService, targetDate);
+        Buffet buffet = new Buffet(guestsForToday); // Initialize the buffet state
+        System.out.println("Number of guest for today: " + guestsForToday.size());
         System.out.println(buffet);
 
         BreakfastManager.serve(guestService

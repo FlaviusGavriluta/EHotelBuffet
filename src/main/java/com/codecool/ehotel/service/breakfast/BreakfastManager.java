@@ -26,7 +26,7 @@ public class BreakfastManager {
             System.out.println("There are " + cyclesLeft + " cycles left");
 
             // Phase 1: Refill buffet supply
-            List<BuffetService.RefillRequest> refillRequests = GetOptimalPortions.getOptimalPortions(guestsToExpect, cyclesLeft, 50);
+            List<BuffetService.RefillRequest> refillRequests = GetOptimalPortions.getOptimalPortions(guestsToExpect, cyclesLeft, 5);
             System.out.println("The optimal refill request is: " + refillRequests);
             RefillBuffet.refillBuffet(buffet, buffetService, refillRequests, currentTime);
             currentTime = currentTime.plusMinutes(30);

@@ -10,6 +10,7 @@ public class EHotelBuffetApplication {
         Logger logger = new ConsoleLogger();
         logger.logInfo("Starting EHotel Buffet Application");
         logger.logError("This is an error message");
+
         // Initialize services
 
 

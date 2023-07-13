@@ -7,15 +7,17 @@ import com.codecool.ehotel.service.guest.GuestGenerator;
 import com.codecool.ehotel.service.guest.GuestService;
 import com.codecool.ehotel.service.guest.GuestServiceImpl;
 
+import static com.codecool.ehotel.EHotelBuffetApplication.guestsToExpect;
+
 import java.util.List;
 
 public class BuffetRefillOptimizer {
     public static int[] runOptimization() {
         GuestService guestService = new GuestServiceImpl();
-        List<Guest> generateGuests = GuestGenerator.generateGuests(guestService); // Generate guests
+        List<Guest> generateGuests = GuestGenerator.generateGuests(guestService, guestsToExpect); // Generate guests
         Buffet buffet = new Buffet(generateGuests); // Initialize the buffet state
 
-        int[] guestsToExpect = {6, 4, 2}; // Guests to expect per guest type
+        // Guests to expect per guest type
         int cyclesLeft = 8; // Cycles left for the day
         double costOfUnhappyGuest = 10.0; // Assumed cost of an unhappy guest
 

@@ -8,22 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GuestGenerator {
-    public static List<Guest> generateGuests(GuestService guestService, int[] guestsToExpect) {
+    public static List<Guest> generateGuests(GuestService guestService, int number, LocalDate seasonStart, LocalDate seasonEnd) {
         List<Guest> allGuests = new ArrayList<>();
-        LocalDate seasonStart = LocalDate.of(2023, 6, 1);
-        LocalDate seasonEnd = LocalDate.of(2023, 9, 30);
 
-        for (GuestType guestType : GuestType.values()) {
-            int expectedGuests = guestsToExpect[guestType.ordinal()];
-            int generatedGuests = 0;
-
-            while (generatedGuests < expectedGuests) {
-                Guest guest = guestService.generateRandomGuest(seasonStart, seasonEnd);
-                if (guest.guestType() == guestType) {
-                    allGuests.add(guest);
-                    generatedGuests++;
-                }
-            }
+        while (allGuests.size() < number) {
+            allGuests.add(guestService.generateRandomGuest(seasonStart, seasonEnd));
         }
         return allGuests;
     }

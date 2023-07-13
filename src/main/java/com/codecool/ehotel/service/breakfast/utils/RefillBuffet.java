@@ -9,8 +9,7 @@ import java.util.List;
 import static com.codecool.ehotel.service.breakfast.utils.GenerateRefillRequests.generateRefillRequests;
 
 public class RefillBuffet {
-    public static void refillBuffet(Buffet buffet, BuffetService buffetService, LocalDateTime currentTime) {
-        List<BuffetService.RefillRequest> refillRequests = generateRefillRequests();
+    public static void refillBuffet(Buffet buffet, BuffetService buffetService, List<BuffetService.RefillRequest> refillRequests, LocalDateTime currentTime) {
         buffetService.refillBuffet(buffet, refillRequests, currentTime);
     }
 }

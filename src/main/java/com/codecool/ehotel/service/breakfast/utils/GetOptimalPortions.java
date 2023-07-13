@@ -1,70 +1,35 @@
 package com.codecool.ehotel.service.breakfast.utils;
 
 import com.codecool.ehotel.model.Buffet;
+import com.codecool.ehotel.model.GuestType;
 import com.codecool.ehotel.model.MealType;
+import com.codecool.ehotel.service.buffet.BuffetService;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GetOptimalPortions {
-    public static int[] getOptimalPortions(Buffet buffet, int[] guestsToExpect, int cyclesLeft, double costOfUnhappyGuest) {
-        int[] refillAmounts = new int[MealType.values().length]; // Refill amounts for each meal type
+    public static List<BuffetService.RefillRequest> getOptimalPortions(Map<GuestType, Integer> guestsToExpect, int cyclesLeft, double costOfUnhappyGuest) {
+        List<BuffetService.RefillRequest> refillRequests = new ArrayList<>();
 
-        // Initialize refill amounts with the maximum possible value
-        for (MealType mealType : MealType.values()) {
-            refillAmounts[mealType.ordinal()] = guestsToExpect[mealType.ordinal()] * cyclesLeft;
-        }
+        for (Map.Entry<GuestType, Integer> entry : guestsToExpect.entrySet()) {
+            GuestType guestType = entry.getKey();
+            List<MealType> mealTypes = guestType.getMealPreferences();
+            Integer numberOfGuests = entry.getValue();
 
-        // Calculate the initial cost based on maximum refill amounts
-        double initialCost = calculateCost(buffet, refillAmounts, costOfUnhappyGuest);
-
-        // Perform iterative optimization
-        boolean optimized = false;
-        while (!optimized) {
-            optimized = true;
-
-            // Try reducing refill amounts for each meal type
-            for (MealType mealType : MealType.values()) {
-                int currentRefillAmount = refillAmounts[mealType.ordinal()];
-
-                // Skip if the current refill amount is already 0
-                if (currentRefillAmount == 0) {
-                    continue;
-                }
-
-                // Reduce the refill amount by 1 and calculate the new cost
-                refillAmounts[mealType.ordinal()] = Math.max(0, currentRefillAmount - 1);
-                double newCost = calculateCost(buffet, refillAmounts, costOfUnhappyGuest);
-
-                // If the new cost is lower, keep the reduced refill amount
-                if (newCost < initialCost) {
-                    initialCost = newCost;
-                    optimized = false; // Continue optimization
+            for (MealType mealType : mealTypes) {
+                if (cyclesLeft > 3) {
+                    if (mealType.getMealCost() < costOfUnhappyGuest) {
+                        refillRequests.add(new BuffetService.RefillRequest(mealType, numberOfGuests));
+                    }
                 } else {
-                    // Otherwise, revert the refill amount to the previous value
-                    refillAmounts[mealType.ordinal()] = currentRefillAmount;
+                    refillRequests.add(new BuffetService.RefillRequest(mealType, numberOfGuests));
                 }
             }
         }
 
-        return refillAmounts;
-    }
-
-    private static double calculateCost(Buffet buffet, int[] refillAmounts, double costOfUnhappyGuest) {
-        double totalCost = 0;
-
-        // Calculate the cost of food waste and unhappy guests combined
-        for (MealType mealType : MealType.values()) {
-            int refillAmount = refillAmounts[mealType.ordinal()];
-
-            // Calculate the number of unhappy guests based on the refill amount
-            int unhappyGuests = buffet.calculateUnhappyGuests(mealType, refillAmount);
-
-            // Calculate the potential food waste if all portions are refilled
-            int potentialFoodWaste = buffet.calculatePotentialFoodWaste(mealType, refillAmount);
-
-            // Calculate the cost of food waste and unhappy guests for this meal type
-            double mealCost = (unhappyGuests * costOfUnhappyGuest) + potentialFoodWaste;
-            totalCost += mealCost;
-        }
-
-        return totalCost;
+        return refillRequests;
     }
 }

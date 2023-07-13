@@ -1,45 +1,51 @@
 package com.codecool.ehotel.service.breakfast.utils;
 
 import com.codecool.ehotel.model.Buffet;
+import com.codecool.ehotel.model.GuestType;
 import com.codecool.ehotel.model.MealType;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GetOptimalPortions {
     public static int[] getOptimalPortions(Buffet buffet, int[] guestsToExpect, int cyclesLeft, double costOfUnhappyGuest) {
-        int[] refillAmounts = new int[MealType.values().length]; // Refill amounts for each meal type
+        int[] refillAmounts = new int[MealType.values().length];
 
-        // Initialize refill amounts with the maximum possible value
-        for (int i = 0; i < MealType.values().length; i++) {
-            MealType mealType = MealType.values()[i];
-            refillAmounts[i] = guestsToExpect[mealType.ordinal()] * cyclesLeft;
+        for (GuestType guestType : GuestType.values()) {
+            List<MealType> mealPreferences = guestType.getMealPreferences();
+            MealType preferredMealType = guestType.getPreferredMealType();
+
+            int guestsToExpectForType = guestsToExpect[guestType.ordinal()];
+
+            for (MealType mealType : mealPreferences) {
+                refillAmounts[mealType.ordinal()] += guestsToExpectForType;
+            }
+
+            // Set the preferred meal type to the maximum value
+            refillAmounts[preferredMealType.ordinal()] = guestsToExpectForType * cyclesLeft;
         }
 
-        // Calculate the initial cost based on maximum refill amounts
         double initialCost = calculateCost(buffet, refillAmounts, costOfUnhappyGuest);
-
-        // Perform iterative optimization
         boolean optimized = false;
+
         while (!optimized) {
             optimized = true;
 
-            // Try reducing refill amounts for each meal type
             for (MealType mealType : MealType.values()) {
                 int currentRefillAmount = refillAmounts[mealType.ordinal()];
 
-                // Skip if the current refill amount is already 0
                 if (currentRefillAmount == 0) {
                     continue;
                 }
 
-                // Reduce the refill amount by 1 and calculate the new cost
                 refillAmounts[mealType.ordinal()] = Math.max(0, currentRefillAmount - 1);
                 double newCost = calculateCost(buffet, refillAmounts, costOfUnhappyGuest);
 
-                // If the new cost is lower, keep the reduced refill amount
                 if (newCost < initialCost) {
                     initialCost = newCost;
-                    optimized = false; // Continue optimization
+                    optimized = false;
                 } else {
-                    // Otherwise, revert the refill amount to the previous value
                     refillAmounts[mealType.ordinal()] = currentRefillAmount;
                 }
             }
@@ -47,6 +53,7 @@ public class GetOptimalPortions {
 
         return refillAmounts;
     }
+
 
     private static double calculateCost(Buffet buffet, int[] refillAmounts, double costOfUnhappyGuest) {
         double totalCost = 0;

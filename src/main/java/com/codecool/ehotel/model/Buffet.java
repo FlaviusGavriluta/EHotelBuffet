@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Buffet {
-    private Map<MealType, List<MealPortion>> mealPortions;
+    private final Map<MealType, List<MealPortion>> mealPortions;
     private final List<Guest> guests;
 
     public Buffet(List<Guest> guests) {

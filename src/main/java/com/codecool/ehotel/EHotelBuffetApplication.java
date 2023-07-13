@@ -29,6 +29,7 @@ public class EHotelBuffetApplication {
         List<Guest> generateGuests = GuestGenerator.generateGuests(guestService, 40, LocalDate.of(2023, 6, 1), LocalDate.of(2023, 9, 30)); // Generate guests
         Buffet buffet = new Buffet(generateGuests); // Initialize the buffet state
         LocalDate targetDate = LocalDate.of(2023, 7, 15);
+        System.out.println(buffet);
 
         BreakfastManager.serve(guestService
                 .splitGuestsIntoBreakfastGroups(GuestGenerator

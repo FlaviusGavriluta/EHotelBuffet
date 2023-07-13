@@ -5,10 +5,7 @@ import com.codecool.ehotel.model.GuestType;
 import com.codecool.ehotel.model.MealType;
 import com.codecool.ehotel.service.buffet.BuffetService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GetOptimalPortions {
     public static List<BuffetService.RefillRequest> getOptimalPortions(Map<GuestType, Integer> guestsToExpect, int cyclesLeft, double costOfUnhappyGuest) {
@@ -18,14 +15,17 @@ public class GetOptimalPortions {
             GuestType guestType = entry.getKey();
             List<MealType> mealTypes = guestType.getMealPreferences();
             Integer numberOfGuests = entry.getValue();
+            Optional<MealType> cheapestMeal = mealTypes.stream()
+                    .min(Comparator.comparingDouble(MealType::getMealCost));
 
-            for (MealType mealType : mealTypes) {
+            if (cheapestMeal.isPresent()) {
+                MealType mealWithLowestCost = cheapestMeal.get();
                 if (cyclesLeft > 3) {
-                    if (mealType.getMealCost() < costOfUnhappyGuest) {
-                        refillRequests.add(new BuffetService.RefillRequest(mealType, numberOfGuests));
+                    if (mealWithLowestCost.getMealCost() < costOfUnhappyGuest) {
+                        refillRequests.add(new BuffetService.RefillRequest(mealWithLowestCost, numberOfGuests));
                     }
                 } else {
-                    refillRequests.add(new BuffetService.RefillRequest(mealType, numberOfGuests));
+                    refillRequests.add(new BuffetService.RefillRequest(mealWithLowestCost, numberOfGuests));
                 }
             }
         }

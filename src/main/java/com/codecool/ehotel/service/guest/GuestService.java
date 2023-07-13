@@ -1,6 +1,7 @@
 package com.codecool.ehotel.service.guest;
 
 import com.codecool.ehotel.model.Guest;
+import com.codecool.ehotel.model.GuestType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,4 +12,6 @@ public interface GuestService {
     List<Guest> getGuestsForDay(List<Guest> guests, LocalDate date);
 
     List<List<Guest>> splitGuestsIntoBreakfastGroups(List<Guest> guests);
+
+    Guest generateRandomGuestOfType(GuestType guestType, LocalDate seasonStart, LocalDate seasonEnd);
 }

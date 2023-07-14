@@ -7,23 +7,35 @@ import java.util.List;
 import java.util.Map;
 
 
-public record Buffet(Map<MealType, List<MealPortion>> mealPortions) {
+public class Buffet {
+    private Map<MealType, List<MealPortion>> mealPortionsMap;
 
     public Buffet() {
-        this(new HashMap<>());
+        this.mealPortionsMap = new HashMap<>();
     }
 
     public void addMealPortion(MealType mealType, MealPortion mealPortion) {
-        mealPortions.computeIfAbsent(mealType, k -> new ArrayList<>()).add(mealPortion);
+        mealPortionsMap.computeIfAbsent(mealType, k -> new ArrayList<>()).add(mealPortion);
+    }
+
+    public void removeMealPortion(MealType mealType, MealPortion mealPortion) {
+        List<MealPortion> mealPortions = mealPortionsMap.get(mealType);
+        if (mealPortions != null) {
+            mealPortions.remove(mealPortion);
+        }
     }
 
     public List<MealPortion> getMealPortionsByType(MealType mealType) {
-        return mealPortions.getOrDefault(mealType, new ArrayList<>());
+        return mealPortionsMap.getOrDefault(mealType, new ArrayList<>());
     }
 
     public List<MealPortion> getMealPortionsByTypeOrderedByFreshness(MealType mealType) {
-        List<MealPortion> portions = mealPortions.getOrDefault(mealType, new ArrayList<>());
+        List<MealPortion> portions = mealPortionsMap.getOrDefault(mealType, new ArrayList<>());
         portions.sort(Comparator.comparing(MealPortion::getTimestamp));
         return portions;
+    }
+
+    public Map<MealType, List<MealPortion>> getMealPortionsMap() {
+        return mealPortionsMap;
     }
 }

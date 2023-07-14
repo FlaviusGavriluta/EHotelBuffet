@@ -7,12 +7,11 @@ import com.codecool.ehotel.service.buffet.BuffetService;
 import com.codecool.ehotel.service.buffet.BuffetServiceImpl;
 import com.codecool.ehotel.service.guest.GuestService;
 import com.codecool.ehotel.service.guest.GuestServiceImpl;
+import com.codecool.ehotel.service.guest.GuestGenerator;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class EHotelBuffetApplication {
 
@@ -26,31 +25,33 @@ public class EHotelBuffetApplication {
         for (GuestType guestType : guestTypes) {
             logger.logInfo(guestType.toString());
         }
-        // Initialize services
-
 
         // Generate guests for the season
         LocalDate seasonStart = LocalDate.of(2023, 8, 1);
-        LocalDate seasonEnd = LocalDate.of(2023, 8, 14);
+        LocalDate seasonEnd = LocalDate.of(2023, 8, 31);
+        int numberOfGuests = 100;
 
-        GuestService guestService = new GuestServiceImpl(new ArrayList<>());
-        Guest randomGuest = guestService.generateRandomGuest(seasonStart, seasonEnd);
+        // Generate random guests for the entire season
+        List<Guest> randomGuests = GuestGenerator.generateRandomGuestsList(numberOfGuests, seasonStart, seasonEnd);
 
-        System.out.println("Random Guest: " + randomGuest);
-
+        // Print random guests for the entire season
+        System.out.println("Random guests for the entire season:");
+        for (Guest guest : randomGuests) {
+            System.out.println(guest);
+        }
 
         // Run breakfast buffet
         Buffet buffet = new Buffet();
         BuffetService buffetService = new BuffetServiceImpl();
 
-// Refill the buffet with portions
+        // Refill the buffet with portions
         Map<MealType, Integer> portionCounts = new HashMap<>();
         portionCounts.put(MealType.SCRAMBLED_EGGS, 5);
         portionCounts.put(MealType.FRIED_BACON, 10);
         Instant timestamp = Instant.now();
         buffetService.refillBuffet(buffet, portionCounts, timestamp);
 
-// Consume the freshest portion of a meal type
+        // Consume the freshest portion of a meal type
         MealType mealType = MealType.FRIED_BACON;
         boolean consumed = buffetService.consumeFreshest(buffet, mealType);
         if (consumed) {
@@ -65,5 +66,25 @@ public class EHotelBuffetApplication {
         Instant time = timestamp.plusSeconds(6000);
         int totalCost = buffetService.collectWaste(buffet, mealDurability, time);
         System.out.println("Total cost of discarded meals: " + totalCost);
+
+        // Split guests for a day into 8 cycles
+        LocalDate specificDate = LocalDate.of(2023, 8, 15);
+        GuestService guestService = new GuestServiceImpl(randomGuests);
+        List<Guest> guestsForDay = guestService.getGuestsForDay(randomGuests, specificDate);
+
+        // Print random guests for a specific day
+        System.out.println("Random guests for " + specificDate + ":");
+        for (Guest guest : guestsForDay) {
+            System.out.println(guest);
+        }
+
+        // Split guests for a day into 8 cycles
+        List<List<Guest>> breakfastCycles = guestService.splitGuestsIntoBreakfastCycles(guestsForDay);
+
+        // Print the guests in each breakfast cycle
+        for (int i = 0; i < breakfastCycles.size(); i++) {
+            System.out.println("Breakfast Cycle " + (i + 1) + ": " + breakfastCycles.get(i));
+        }
+
     }
 }

@@ -1,37 +1,68 @@
 package com.codecool.ehotel.service.breakfast;
 
-import com.codecool.ehotel.model.*;
-import com.codecool.ehotel.service.breakfast.utils.*;
+import com.codecool.ehotel.model.Buffet;
+import com.codecool.ehotel.model.Guest;
+import com.codecool.ehotel.model.GuestType;
+import com.codecool.ehotel.model.MealType;
 import com.codecool.ehotel.service.buffet.BuffetService;
-import com.codecool.ehotel.service.buffet.BuffetServiceImpl;
-import com.codecool.ehotel.service.logger.ConsoleLogger;
-import com.codecool.ehotel.service.logger.Logger;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
-
-import static com.codecool.ehotel.service.breakfast.utils.ConsumeBreakfast.consumeBreakfast;
-import static com.codecool.ehotel.service.breakfast.utils.RefillBuffet.refillBuffet;
+import java.util.Map;
+import java.util.Random;
 
 public class BreakfastManager {
-    private static LocalDateTime currentTime = LocalDateTime.now();
-    public static double costOfFoodWaste;
+    private BuffetService buffetService;
+    private Buffet buffet;
 
-    public static void serve(List<List<Guest>> guests, Buffet buffet) {
-        Logger logger = new ConsoleLogger();
-        BuffetService buffetService = new BuffetServiceImpl();
+    public BreakfastManager(BuffetService buffetService) {
+        this.buffetService = buffetService;
+        this.buffet = new Buffet();
+    }
 
-        for (List<Guest> guestGroup : guests) {
-            // Phase 1: Refill buffet supply
-            refillBuffet(buffet, buffetService, currentTime);
-            currentTime = currentTime.plusMinutes(30);
-            // Phase 2: Consume breakfast
-            consumeBreakfast(guestGroup, buffet, buffetService);
+    public void serve(List<List<Guest>> breakfastCycles, Map<MealType, Integer> portionCounts) {
+        for (int cycleIndex = 0; cycleIndex < breakfastCycles.size(); cycleIndex++) {
+            System.out.println("=== Breakfast Cycle " + (cycleIndex + 1) + " ===");
 
-            // Phase 3: Discard old meal
-            DiscardOldMeals.discardOldMeals(buffet, buffetService, currentTime);
+            // Refill buffet supply
+            refillBuffet(portionCounts);
+
+            // Serve breakfast to guests
+            List<Guest> guests = breakfastCycles.get(cycleIndex);
+            serveBreakfastToGuest(guests);
+
+            // Discard old meals
+            //buffetService.collectWaste(buffet);
+
+            System.out.println();
         }
-        // Discard all SHORT and MEDIUM durability meals at the end of the day
-        DiscardNonLongDurabilityMeals.discardNonLongDurabilityMeals(buffet);
+    }
+
+    public void refillBuffet(Map<MealType, Integer> portionCounts) {
+        Instant timestamp = Instant.now(); // Puteți folosi un timestamp valid pentru reumplerea aprovizionării
+        buffetService.refillBuffet(buffet, portionCounts, timestamp);
+        System.out.println("Buffet supply has been refilled.");
+        System.out.println("Buffet contains:" + buffet.getMealPortionsMap());
+    }
+
+    private void serveBreakfastToGuest(List<Guest> guests) {
+        for (Guest guest : guests) {
+            GuestType guestType = guest.guestType();
+            List<MealType> preferences = guestType.getMealPreferences();
+
+            boolean foundPreferredMeal = false;
+
+            for(MealType mealType : preferences) {
+                if(buffetService.consumeFreshest(buffet, mealType)) {
+                    System.out.println("Guest " + guest.name() + " has eaten " + mealType);
+                    foundPreferredMeal = true;
+                    break;
+                }
+            }
+            if(!foundPreferredMeal) {
+                System.out.println("Guest " + guest.name() + " has eaten nothing");
+            }
+        }
     }
 }

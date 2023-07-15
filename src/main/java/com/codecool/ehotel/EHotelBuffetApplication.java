@@ -22,12 +22,6 @@ public class EHotelBuffetApplication {
         // Initialize logger
         Logger logger = new ConsoleLogger();
         logger.logInfo("Starting EHotel Buffet Application");
-        logger.logError("This is an error message");
-
-        GuestType[] guestTypes = GuestType.values();
-        for (GuestType guestType : guestTypes) {
-            logger.logInfo(guestType.toString());
-        }
         out.println("-----------------------------------");
 
         // Generate guests for the season
@@ -37,12 +31,7 @@ public class EHotelBuffetApplication {
         List<Guest> randomGuests = GuestGenerator.generateRandomGuestsList(numberOfGuests, seasonStart, seasonEnd);
 
         // Print random guests for the entire season
-        logger.logInfo("Random guests for the entire season:");
-        for (Guest guest : randomGuests) {
-            out.println(guest);
-        }
-        logger.logInfo("Total number of guests: " + randomGuests.size() + " guests");
-        out.println("-----------------------------------");
+        logger.logInfo("Total number of guests for the entire season: " + randomGuests.size() + " guests");
 
         // Split guests for a day into 8 cycles
         LocalDate specificDate = LocalDate.of(2023, 8, 15);
@@ -50,10 +39,6 @@ public class EHotelBuffetApplication {
         List<Guest> guestsForDay = guestService.getGuestsForDay(randomGuests, specificDate);
 
         // Print random guests for a specific day
-        System.out.println("Random guests for " + specificDate + ":");
-        for (Guest guest : guestsForDay) {
-            System.out.println(guest);
-        }
         logger.logInfo("Total number of guests for " + specificDate + ": " + guestsForDay.size() + " guests");
         out.println("-----------------------------------");
 
@@ -65,23 +50,20 @@ public class EHotelBuffetApplication {
 
         // Refill the buffet with portions
         Map<MealType, Integer> portionCounts = new HashMap<>();
-        portionCounts.put(MealType.CEREAL, 10); // Exemplu: 10 porții de cereale
-        portionCounts.put(MealType.MILK, 5);    // Exemplu: 5 porții de lapte
-        portionCounts.put(MealType.FRIED_BACON, 5); // Exemplu: 5 porții de bacon prăjit
-        portionCounts.put(MealType.SCRAMBLED_EGGS, 5); // Exemplu: 5 porții de ouă ochiuri
-        portionCounts.put(MealType.MASHED_POTATO, 5); // Exemplu: 5 porții de piure de cartofi
-        portionCounts.put(MealType.FRIED_SAUSAGE, 5); // Exemplu: 5 porții de cârnați prăjiți
-        portionCounts.put(MealType.MUFFIN, 15); // Exemplu: 15 porții de muffin
-        portionCounts.put(MealType.PANCAKE, 10); // Exemplu: 10 porții de cafea
+        portionCounts.put(MealType.PANCAKE, 20);
+        portionCounts.put(MealType.FRIED_SAUSAGE, 10);
+        portionCounts.put(MealType.FRIED_BACON, 11);
         BreakfastManager breakfastManager = new BreakfastManager(buffetService);
         breakfastManager.serve(breakfastCycles, portionCounts);
 
         // Print the guests in each breakfast cycle
+        out.println("-----------------------------------");
         for (int i = 0; i < breakfastCycles.size(); i++) {
             System.out.println("Breakfast Cycle " + (i + 1) + ": " + breakfastCycles.get(i));
         }
 
         // Collect waste based on meal durability and timestamp
+        out.println("-----------------------------------");
         logger.logInfo("Meal portions in the buffet before discarding meals: " + buffet.getMealPortionsMap());
         MealDurability mealDurability = MealDurability.SHORT;
         Instant timestamp = Instant.now();

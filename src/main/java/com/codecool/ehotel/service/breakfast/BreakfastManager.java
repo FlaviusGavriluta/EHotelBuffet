@@ -1,9 +1,6 @@
 package com.codecool.ehotel.service.breakfast;
 
-import com.codecool.ehotel.model.Buffet;
-import com.codecool.ehotel.model.Guest;
-import com.codecool.ehotel.model.GuestType;
-import com.codecool.ehotel.model.MealType;
+import com.codecool.ehotel.model.*;
 import com.codecool.ehotel.service.buffet.BuffetService;
 
 import java.time.Instant;
@@ -33,17 +30,31 @@ public class BreakfastManager {
             serveBreakfastToGuest(guests);
 
             // Discard old meals
-            //buffetService.collectWaste(buffet);
-
+            if ((cycleIndex + 1) % 3 == 0) {
+                discardOldMeals();
+            }
             System.out.println();
         }
+        discardNonLongDurabilityMeals();
     }
 
     public void refillBuffet(Map<MealType, Integer> portionCounts) {
         Instant timestamp = Instant.now(); // Puteți folosi un timestamp valid pentru reumplerea aprovizionării
-        buffetService.refillBuffet(buffet, portionCounts, timestamp);
+
+        for (Map.Entry<MealType, Integer> entry : portionCounts.entrySet()) {
+            MealType mealType = entry.getKey();
+            int portionCount = entry.getValue();
+
+            for (int i = 0; i < portionCount; i++) {
+                MealPortion mealPortion = new MealPortion(mealType, timestamp);
+                buffet.addMealPortion(mealType, mealPortion);
+            }
+        }
+
         System.out.println("Buffet supply has been refilled.");
         System.out.println("Buffet contains:" + buffet.getMealPortionsMap());
+        System.out.println("Buffet portions count: " + buffet.getMealPortionsMap().values().stream().mapToInt(List::size).sum());
+
     }
 
     private void serveBreakfastToGuest(List<Guest> guests) {
@@ -53,16 +64,39 @@ public class BreakfastManager {
 
             boolean foundPreferredMeal = false;
 
-            for(MealType mealType : preferences) {
-                if(buffetService.consumeFreshest(buffet, mealType)) {
+            for (MealType mealType : preferences) {
+                System.out.println("Guest " + guest.name() + " is looking for " + mealType);
+                if (buffetService.consumeFreshest(buffet, mealType)) {
                     System.out.println("Guest " + guest.name() + " has eaten " + mealType);
                     foundPreferredMeal = true;
                     break;
                 }
             }
-            if(!foundPreferredMeal) {
+            if (!foundPreferredMeal) {
                 System.out.println("Guest " + guest.name() + " has eaten nothing");
             }
         }
+        System.out.println("Buffet contains after guests have eaten: " + buffet.getMealPortionsMap());
+        System.out.println("Buffet portions count: " + buffet.getMealPortionsMap().values().stream().mapToInt(List::size).sum());
+    }
+
+    private void discardOldMeals() {
+        Instant currentTime = Instant.now();
+        Instant discardTime = currentTime.minusSeconds(5400); // 90 minutes ago
+
+        int costShort = buffetService.collectWaste(buffet, MealDurability.SHORT, discardTime);
+        System.out.println("Discarded old SHORT meals. Total cost: $" + costShort);
+    }
+
+    private void discardNonLongDurabilityMeals() {
+        Instant currentTime = Instant.now();
+
+        for (MealType mealType : buffet.getMealPortionsMap().keySet()) {
+            if (mealType.getDurability() != MealDurability.LONG) {
+                buffetService.collectWaste(buffet, mealType.getDurability(), currentTime);
+            }
+        }
+
+        System.out.println("Discarded non-long durability meals at the end of the day.");
     }
 }

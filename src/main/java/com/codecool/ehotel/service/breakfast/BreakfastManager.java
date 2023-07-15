@@ -39,22 +39,30 @@ public class BreakfastManager {
     }
 
     public void refillBuffet(Map<MealType, Integer> portionCounts) {
-        Instant timestamp = Instant.now(); // Puteți folosi un timestamp valid pentru reumplerea aprovizionării
-
         for (Map.Entry<MealType, Integer> entry : portionCounts.entrySet()) {
             MealType mealType = entry.getKey();
             int portionCount = entry.getValue();
 
+            List<MealPortion> mealPortions = buffet.getMealPortionsByType(mealType);
+            mealPortions.clear(); // Se elimină toate porțiunile existente pentru tipul de mâncare
+
             for (int i = 0; i < portionCount; i++) {
-                MealPortion mealPortion = new MealPortion(mealType, timestamp);
+                MealPortion mealPortion = new MealPortion(mealType, Instant.now());
                 buffet.addMealPortion(mealType, mealPortion);
             }
         }
 
-        System.out.println("Buffet supply has been refilled.");
-        System.out.println("Buffet contains:" + buffet.getMealPortionsMap());
-        System.out.println("Buffet portions count: " + buffet.getMealPortionsMap().values().stream().mapToInt(List::size).sum());
+        System.out.println("Buffet supply has been refilled and it contains:");
+        for (Map.Entry<MealType, List<MealPortion>> entry : buffet.getMealPortionsMap().entrySet()) {
+            MealType mealType = entry.getKey();
+            List<MealPortion> mealPortions = entry.getValue();
+            int portionCount = mealPortions.size();
 
+            System.out.println(portionCount + " portion(s) of " + mealType);
+        }
+
+        System.out.println("Total portions in the buffet: " + buffet.getMealPortionsMap().values().stream().mapToInt(List::size).sum());
+        System.out.println("----------------------------------------");
     }
 
     private void serveBreakfastToGuest(List<Guest> guests) {
@@ -65,19 +73,27 @@ public class BreakfastManager {
             boolean foundPreferredMeal = false;
 
             for (MealType mealType : preferences) {
-                System.out.println("Guest " + guest.name() + " is looking for " + mealType);
                 if (buffetService.consumeFreshest(buffet, mealType)) {
-                    System.out.println("Guest " + guest.name() + " has eaten " + mealType);
+                    System.out.println(guest.name() + " has eaten " + mealType);
                     foundPreferredMeal = true;
                     break;
                 }
             }
             if (!foundPreferredMeal) {
-                System.out.println("Guest " + guest.name() + " has eaten nothing");
+                System.out.println(guest.name() + " has eaten nothing");
             }
         }
-        System.out.println("Buffet contains after guests have eaten: " + buffet.getMealPortionsMap());
-        System.out.println("Buffet portions count: " + buffet.getMealPortionsMap().values().stream().mapToInt(List::size).sum());
+        System.out.println("Buffet supply after breakfast:");
+        for (Map.Entry<MealType, List<MealPortion>> entry : buffet.getMealPortionsMap().entrySet()) {
+            MealType mealType = entry.getKey();
+            List<MealPortion> mealPortions = entry.getValue();
+            int portionCount = mealPortions.size();
+
+            System.out.println(portionCount + " portion(s) of " + mealType);
+        }
+
+        System.out.println("Total portions in the buffet: " + buffet.getMealPortionsMap().values().stream().mapToInt(List::size).sum());
+        System.out.println("=====================");
     }
 
     private void discardOldMeals() {

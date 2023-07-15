@@ -72,6 +72,7 @@ public class EHotelBuffetApplication {
         portionCounts.put(MealType.MASHED_POTATO, 5); // Exemplu: 5 porții de piure de cartofi
         portionCounts.put(MealType.FRIED_SAUSAGE, 5); // Exemplu: 5 porții de cârnați prăjiți
         portionCounts.put(MealType.MUFFIN, 15); // Exemplu: 15 porții de muffin
+        portionCounts.put(MealType.PANCAKE, 10); // Exemplu: 10 porții de cafea
         BreakfastManager breakfastManager = new BreakfastManager(buffetService);
         breakfastManager.serve(breakfastCycles, portionCounts);
 
@@ -80,22 +81,13 @@ public class EHotelBuffetApplication {
             System.out.println("Breakfast Cycle " + (i + 1) + ": " + breakfastCycles.get(i));
         }
 
-        // Consume the freshest portion of a meal type
-        MealType mealType = MealType.FRIED_BACON;
-        boolean consumed = buffetService.consumeFreshest(buffet, mealType);
-        if (consumed) {
-            logger.logInfo("A portion of " + mealType + " was consumed.");
-        } else {
-            logger.logInfo("No portions of " + mealType + " available in the buffet.");
-        }
-
         // Collect waste based on meal durability and timestamp
-        logger.logInfo("Meal portions in the buffet: " + buffet.getMealPortionsMap());
+        logger.logInfo("Meal portions in the buffet before discarding meals: " + buffet.getMealPortionsMap());
         MealDurability mealDurability = MealDurability.SHORT;
         Instant timestamp = Instant.now();
-        Instant time = timestamp.plusSeconds(6000);
+        Instant time = timestamp.plusSeconds(5400);
         int totalCost = buffetService.collectWaste(buffet, mealDurability, time);
         System.out.println("Total cost of discarded meals: " + totalCost);
-        logger.logInfo("Meal portions in the buffet: " + buffet.getMealPortionsMap());
+        logger.logInfo("Meal portions in the buffet after discarding meals: " + buffet.getMealPortionsMap());
     }
 }

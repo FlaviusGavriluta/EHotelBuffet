@@ -1,5 +1,7 @@
 package com.codecool.ehotel.model;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -22,6 +24,12 @@ public class Buffet {
         List<MealPortion> mealPortions = mealPortionsMap.get(mealType);
         if (mealPortions != null) {
             mealPortions.remove(mealPortion);
+        }
+    }
+
+    public void removeExpiredMealPortions(Instant currentTime) {
+        for (List<MealPortion> mealPortions : mealPortionsMap.values()) {
+            mealPortions.removeIf(mealPortion -> Duration.between(mealPortion.getTimestamp(), currentTime).toMinutes() >= 90);
         }
     }
 

@@ -15,12 +15,29 @@ public class BuffetServiceImpl implements BuffetService {
     public void refillBuffet(Buffet buffet, Map<MealType, Integer> portionCounts, Instant timestamp) {
         for (Map.Entry<MealType, Integer> entry : portionCounts.entrySet()) {
             MealType mealType = entry.getKey();
-            int count = entry.getValue();
-            for (int i = 0; i < count; i++) {
+            int portionCount = entry.getValue();
+
+            List<MealPortion> mealPortions = buffet.getMealPortionsByType(mealType);
+            mealPortions.clear(); // Se elimină toate porțiunile existente pentru tipul de mâncare
+
+            for (int i = 0; i < portionCount; i++) {
                 MealPortion mealPortion = new MealPortion(mealType, timestamp);
                 buffet.addMealPortion(mealType, mealPortion);
             }
         }
+        buffet.removeExpiredMealPortions(Instant.now()); // Se elimină porțiunile scurte expirate
+
+        System.out.println("Buffet supply has been refilled and it contains:");
+        for (Map.Entry<MealType, List<MealPortion>> entry : buffet.getMealPortionsMap().entrySet()) {
+            MealType mealType = entry.getKey();
+            List<MealPortion> mealPortions = entry.getValue();
+            int portionCount = mealPortions.size();
+
+            System.out.println(portionCount + " portion(s) of " + mealType);
+        }
+
+        System.out.println("Total portions in the buffet: " + buffet.getMealPortionsMap().values().stream().mapToInt(List::size).sum());
+        System.out.println("----------------------------------------");
     }
 
     @Override

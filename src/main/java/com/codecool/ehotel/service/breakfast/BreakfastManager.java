@@ -23,7 +23,7 @@ public class BreakfastManager {
             System.out.println("=== Breakfast Cycle " + (cycleIndex + 1) + " ===");
 
             // Refill buffet supply
-            refillBuffet(portionCounts);
+            buffetService.refillBuffet(buffet, portionCounts, Instant.now());
 
             // Serve breakfast to guests
             List<Guest> guests = breakfastCycles.get(cycleIndex);
@@ -51,6 +51,8 @@ public class BreakfastManager {
                 buffet.addMealPortion(mealType, mealPortion);
             }
         }
+
+        buffet.removeExpiredMealPortions(Instant.now()); // Se elimină porțiunile scurte expirate
 
         System.out.println("Buffet supply has been refilled and it contains:");
         for (Map.Entry<MealType, List<MealPortion>> entry : buffet.getMealPortionsMap().entrySet()) {
@@ -83,7 +85,8 @@ public class BreakfastManager {
                 System.out.println(guest.name() + " has eaten nothing");
             }
         }
-        System.out.println("Buffet supply after breakfast:");
+        System.out.println();
+        System.out.println("Buffet supply after guests eaten:");
         for (Map.Entry<MealType, List<MealPortion>> entry : buffet.getMealPortionsMap().entrySet()) {
             MealType mealType = entry.getKey();
             List<MealPortion> mealPortions = entry.getValue();

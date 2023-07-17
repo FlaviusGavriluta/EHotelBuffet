@@ -13,10 +13,6 @@ public class BuffetDisplay {
             List<MealPortion> mealPortions = entry.getValue();
             int portionCount = mealPortions.size();
             System.out.println(portionCount + " portion(s) of " + mealType);
-            for (MealPortion mealPortion : mealPortions) {
-                Instant timestamp = mealPortion.getTimestamp();
-                System.out.println("- Created at: " + timestamp);
-            }
         }
         System.out.println("Total portions in the buffet: " + buffet.getMealPortionsMap().values().stream().mapToInt(List::size).sum());
     }

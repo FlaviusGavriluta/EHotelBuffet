@@ -64,12 +64,5 @@ public class EHotelBuffetApplication {
 
         // Collect waste based on meal durability and timestamp
         out.println("-----------------------------------");
-        logger.logInfo("Meal portions in the buffet before discarding meals: " + buffet.getMealPortionsMap());
-        MealDurability mealDurability = MealDurability.SHORT;
-        Instant timestamp = Instant.now();
-        Instant time = timestamp.plusSeconds(5400);
-        int totalCost = buffetService.collectWaste(buffet, mealDurability, time);
-        System.out.println("Total cost of discarded meals: " + totalCost);
-        logger.logInfo("Meal portions in the buffet after discarding meals: " + buffet.getMealPortionsMap());
     }
 }

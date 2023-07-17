@@ -19,7 +19,6 @@ public class GuestGenerator {
             "Smith", "Johnson", "Brown", "Davis", "Wilson", "Taylor", "Anderson",
             "Martinez", "Thomas", "Rodriguez", "Garcia", "Martinez"
     };
-
     private static final GuestType[] GUEST_TYPES = GuestType.values();
 
     public static Guest generateRandomGuest(LocalDate seasonStart, LocalDate seasonEnd) {

@@ -4,6 +4,7 @@ import com.codecool.ehotel.model.*;
 
 import java.time.Instant;
 import java.util.*;
+import java.time.Duration;
 
 public class BuffetServiceImpl implements BuffetService {
     @Override
@@ -36,7 +37,10 @@ public class BuffetServiceImpl implements BuffetService {
             Iterator<MealPortion> iterator = mealPortions.iterator();
             while (iterator.hasNext()) {
                 MealPortion mealPortion = iterator.next();
-                if (mealPortion.getMealType().getDurability() == mealDurability && mealPortion.getTimestamp().isBefore(time)) {
+                Instant creationTime = mealPortion.getTimestamp();
+                if (mealPortion.getMealType().getDurability() == mealDurability
+                        && creationTime.isBefore(time)
+                        && creationTime.plusSeconds(5400).isBefore(Instant.now())) {
                     totalCost += mealPortion.getMealType().getCost();
                     iterator.remove();
                 }

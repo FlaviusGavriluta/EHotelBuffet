@@ -12,10 +12,12 @@ import java.util.Map;
 public class BreakfastManager {
     private BuffetService buffetService;
     private Buffet buffet;
+    private Instant initialTime;
 
     public BreakfastManager(BuffetService buffetService) {
         this.buffetService = buffetService;
         this.buffet = new Buffet();
+        this.initialTime = Instant.now();
     }
 
     public void serve(List<List<Guest>> breakfastCycles, Map<MealType, Integer> portionCounts) {
@@ -24,7 +26,7 @@ public class BreakfastManager {
             System.out.println("=== Breakfast Cycle " + (cycleIndex + 1) + " ===");
 
             // Refill buffet supply
-            buffetService.refillBuffet(buffet, portionCounts, Instant.now());
+            buffetService.refillBuffet(buffet, portionCounts, initialTime.plusSeconds(cycleIndex * 60 * 30));
             BuffetDisplay.displayBuffetSupply(buffet);
 
             // Serve breakfast to guests
@@ -49,5 +51,6 @@ public class BreakfastManager {
         int costShort = buffetService.collectWaste(buffet, MealDurability.SHORT, Instant.now());
         int costMedium = buffetService.collectWaste(buffet, MealDurability.MEDIUM, Instant.now());
         System.out.println("Discarded non-long durability meals at the end of the day. Total cost: $" + costShort + costMedium);
+        BuffetDisplay.displayBuffetSupply(buffet);
     }
 }

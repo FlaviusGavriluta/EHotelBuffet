@@ -50,9 +50,9 @@ public class EHotelBuffetApplication {
 
         // Refill the buffet with portions
         Map<MealType, Integer> portionCounts = new HashMap<>();
-        portionCounts.put(MealType.PANCAKE, 20);
-        portionCounts.put(MealType.FRIED_SAUSAGE, 10);
-        portionCounts.put(MealType.FRIED_BACON, 11);
+        portionCounts.put(MealType.PANCAKE, 10);
+        portionCounts.put(MealType.MASHED_POTATO, 20);
+        portionCounts.put(MealType.FRIED_BACON, 20);
         BreakfastManager breakfastManager = new BreakfastManager(buffetService);
         breakfastManager.serve(breakfastCycles, portionCounts);
 

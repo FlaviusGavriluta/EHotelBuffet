@@ -19,6 +19,7 @@ public class BreakfastManager {
     }
 
     public void serve(List<List<Guest>> breakfastCycles, Map<MealType, Integer> portionCounts) {
+        boolean shouldCollectShortMeals = false;
         for (int cycleIndex = 0; cycleIndex < breakfastCycles.size(); cycleIndex++) {
             System.out.println("=== Breakfast Cycle " + (cycleIndex + 1) + " ===");
 
@@ -30,16 +31,23 @@ public class BreakfastManager {
             List<Guest> guests = breakfastCycles.get(cycleIndex);
             BreakfastServer.serveBreakfastToGuest(guests, buffet, buffetService);
             BuffetDisplay.displayBuffetSupply(buffet);
-            System.out.println("Bufetul contine: "+buffet.getMealPortionsMap().values().stream().mapToInt(List::size)+" portii");
 
             // Discard old meals
             if ((cycleIndex + 1) >= 3) {
-                MealDiscarder.discardOldMeals(buffet, buffetService);
+                shouldCollectShortMeals = true;
             }
+            if (shouldCollectShortMeals) {
+                int costShort = buffetService.collectWaste(buffet, MealDurability.SHORT, Instant.now());
+                System.out.println("Collected expired SHORT meals. Total cost: $" + costShort);
+                BuffetDisplay.displayBuffetSupply(buffet);
+            }
+            System.out.println(Instant.now());
 
             System.out.println("=====================");
             System.out.println();
         }
-        MealDiscarder.discardNonLongDurabilityMeals(buffet, buffetService);
+        int costShort = buffetService.collectWaste(buffet, MealDurability.SHORT, Instant.now());
+        int costMedium = buffetService.collectWaste(buffet, MealDurability.MEDIUM, Instant.now());
+        System.out.println("Discarded non-long durability meals at the end of the day. Total cost: $" + costShort + costMedium);
     }
 }

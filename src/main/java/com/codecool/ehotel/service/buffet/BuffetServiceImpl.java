@@ -39,13 +39,32 @@ public class BuffetServiceImpl implements BuffetService {
                 MealPortion mealPortion = iterator.next();
                 Instant creationTime = mealPortion.getTimestamp();
                 if (mealPortion.getMealType().getDurability() == mealDurability
-                        && creationTime.isBefore(time)
-                        && creationTime.plusSeconds(5400).isBefore(Instant.now())) {
+                        && Duration.between(creationTime, time).compareTo(Duration.ofSeconds(5400)) >= 0) {
                     totalCost += mealPortion.getMealType().getCost();
                     iterator.remove();
                 }
             }
         }
         return totalCost;
+    }
+
+    @Override
+    public int collectWaste(Buffet buffet, MealDurability mealDurability) {
+        // Discarded non-long durability meals at the end of the day.
+        if (mealDurability != MealDurability.LONG) {
+            int totalCost = 0;
+            for (List<MealPortion> mealPortions : buffet.getMealPortionsMap().values()) {
+                Iterator<MealPortion> iterator = mealPortions.iterator();
+                while (iterator.hasNext()) {
+                    MealPortion mealPortion = iterator.next();
+                    if (mealPortion.getMealType().getDurability() == mealDurability) {
+                        totalCost += mealPortion.getMealType().getCost();
+                        iterator.remove();
+                    }
+                }
+            }
+            return totalCost;
+        }
+        return 0;
     }
 }

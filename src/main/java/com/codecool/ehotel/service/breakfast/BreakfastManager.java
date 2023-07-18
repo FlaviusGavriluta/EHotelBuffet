@@ -31,7 +31,6 @@ public class BreakfastManager {
         long secondsToAdd = duration.toSeconds() + 60 * 60 * 3 + 1;
         initialTime = initialTime.plusSeconds(secondsToAdd);
 
-        //initialTime = initialTime.plusSeconds(60 * 60 * 3);
         for (int cycleIndex = 0; cycleIndex < breakfastCycles.size(); cycleIndex++) {
             System.out.println("=== Breakfast Cycle " + (cycleIndex + 1) + " ===");
             System.out.println("Time: " + initialTime);

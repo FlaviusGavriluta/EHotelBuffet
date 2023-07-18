@@ -3,7 +3,6 @@ package com.codecool.ehotel.service.buffet;
 import com.codecool.ehotel.model.*;
 
 import java.util.*;
-import java.time.Instant;
 
 public class BuffetDisplay {
     public static void displayBuffetSupply(Buffet buffet) {

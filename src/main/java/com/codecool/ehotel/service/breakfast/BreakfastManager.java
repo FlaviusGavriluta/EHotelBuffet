@@ -4,6 +4,7 @@ import com.codecool.ehotel.model.*;
 import com.codecool.ehotel.service.breakfast.utils.*;
 import com.codecool.ehotel.service.buffet.BuffetService;
 import com.codecool.ehotel.service.buffet.BuffetDisplay;
+import com.codecool.ehotel.service.guest.GuestsDisplay;
 
 import java.time.*;
 import java.util.List;
@@ -34,6 +35,7 @@ public class BreakfastManager {
         for (int cycleIndex = 0; cycleIndex < breakfastCycles.size(); cycleIndex++) {
             System.out.println("=== Breakfast Cycle " + (cycleIndex + 1) + " ===");
             System.out.println("Time: " + initialTime);
+            GuestsDisplay.displayGuests(breakfastCycles.get(cycleIndex));
 
             // Refill buffet supply
             buffetService.refillBuffet(buffet, portionCounts, initialTime);

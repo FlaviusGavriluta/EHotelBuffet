@@ -43,7 +43,6 @@ public class EHotelBuffetApplication {
         out.println("-----------------------------------");
 
         // Run breakfast buffet
-        Buffet buffet = new Buffet();
         BuffetService buffetService = new BuffetServiceImpl();
         // Split guests for a day into 8 cycles
         List<List<Guest>> breakfastCycles = guestService.splitGuestsIntoBreakfastCycles(guestsForDay);
@@ -53,16 +52,11 @@ public class EHotelBuffetApplication {
         portionCounts.put(MealType.PANCAKE, 1);
         portionCounts.put(MealType.MASHED_POTATO, 1);
         portionCounts.put(MealType.MILK, 1);
+        portionCounts.put(MealType.CEREAL, 1);
+        portionCounts.put(MealType.MUFFIN, 1);
+        portionCounts.put(MealType.SUNNY_SIDE_UP, 1);
+        portionCounts.put(MealType.SCRAMBLED_EGGS, 1);
         BreakfastManager breakfastManager = new BreakfastManager(buffetService);
         breakfastManager.serve(breakfastCycles, portionCounts);
-
-        // Print the guests in each breakfast cycle
-        out.println("-----------------------------------");
-        for (int i = 0; i < breakfastCycles.size(); i++) {
-            System.out.println("Breakfast Cycle " + (i + 1) + ": " + breakfastCycles.get(i));
-        }
-
-        // Collect waste based on meal durability and timestamp
-        out.println("-----------------------------------");
     }
 }

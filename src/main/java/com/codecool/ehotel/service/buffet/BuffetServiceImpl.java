@@ -12,10 +12,7 @@ public class BuffetServiceImpl implements BuffetService {
         for (Map.Entry<MealType, Integer> entry : portionCounts.entrySet()) {
             MealType mealType = entry.getKey();
             int portionCount = entry.getValue();
-            for (int i = 0; i < portionCount; i++) {
-                MealPortion mealPortion = new MealPortion(mealType, timestamp);
-                buffet.addMealPortion(mealType, mealPortion);
-            }
+            BuffetRefill.addMealPortionsToBuffet(buffet, mealType, portionCount, timestamp);
         }
     }
 

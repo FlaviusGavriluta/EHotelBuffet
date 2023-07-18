@@ -17,7 +17,6 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class EHotelBuffetApplication {
-
     public static void main(String[] args) {
         // Initialize logger
         Logger logger = new ConsoleLogger();

@@ -30,7 +30,6 @@ public class GuestServiceImpl implements GuestService {
             breakfastCycles.add(new ArrayList<>());
         }
 
-        // Shuffle the guests randomly
         Collections.shuffle(guests);
 
         // Distribute guests into breakfast cycles

@@ -20,6 +20,6 @@ public class ConsoleLogger implements Logger {
 
     private String formatLogEntry(String logType, String message) {
         LocalDateTime timestamp = LocalDateTime.now();
-        return String.format("[%s] [%s] %s", timestamp, logType, message);
+        return String.format("[%s] %s", logType, message);
     }
 }

@@ -20,8 +20,8 @@ public class EHotelBuffetApplication {
     public static void main(String[] args) {
         // Initialize logger
         Logger logger = new ConsoleLogger();
-        logger.logInfo("Starting EHotel Buffet Application");
-        out.println("-----------------------------------");
+        out.println();
+        logger.logInfo("Starting EHotel Buffet Application \n");
 
         // Generate guests for the season
         LocalDate seasonStart = LocalDate.of(2023, 8, 1);
@@ -30,7 +30,7 @@ public class EHotelBuffetApplication {
         List<Guest> randomGuests = GuestGenerator.generateRandomGuestsList(numberOfGuests, seasonStart, seasonEnd);
 
         // Print random guests for the entire season
-        logger.logInfo("Total number of guests for the entire season: " + randomGuests.size() + " guests");
+        logger.logInfo("The season starts on " + seasonStart + " and ends on " + seasonEnd + " with " + numberOfGuests + " guests" + "\n");
 
         // Split guests for a day into 8 cycles
         LocalDate specificDate = LocalDate.of(2023, 8, 15);
@@ -38,8 +38,7 @@ public class EHotelBuffetApplication {
         List<Guest> guestsForDay = guestService.getGuestsForDay(randomGuests, specificDate);
 
         // Print random guests for a specific day
-        logger.logInfo("Total number of guests for " + specificDate + ": " + guestsForDay.size() + " guests");
-        out.println("-----------------------------------");
+        logger.logInfo("For " + specificDate + " we have " + guestsForDay.size() + " guests\n");
 
         // Run breakfast buffet
         BuffetService buffetService = new BuffetServiceImpl();

@@ -7,6 +7,7 @@ import com.codecool.ehotel.service.buffet.BuffetDisplay;
 import com.codecool.ehotel.service.guest.GuestsDisplay;
 
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +33,12 @@ public class BreakfastManager {
         initialTime = initialTime.plusSeconds(secondsToAdd);
 
         for (int cycleIndex = 0; cycleIndex < breakfastCycles.size(); cycleIndex++) {
-            System.out.println("=== Breakfast Cycle " + (cycleIndex + 1) + " ===");
-            System.out.println("Time: " + initialTime);
+            LocalTime startTime = LocalTime.of(7 + cycleIndex / 2, (cycleIndex % 2) * 30);
+            LocalTime endTime = startTime.plusMinutes(30);
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            String formattedTime = startTime.format(formatter) + " - " + endTime.format(formatter);
+            System.out.println("Cycle " + (cycleIndex + 1) + " of Breakfast Service: " + formattedTime);
             GuestsDisplay.displayGuests(breakfastCycles.get(cycleIndex));
 
             // Refill buffet supply

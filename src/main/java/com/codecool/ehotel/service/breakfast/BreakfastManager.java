@@ -61,9 +61,6 @@ public class BreakfastManager {
             }
             System.out.println();
         }
-        int costShort = buffetService.collectWaste(buffet, MealDurability.SHORT);
-        int costMedium = buffetService.collectWaste(buffet, MealDurability.MEDIUM);
-        int totalCost = costShort + costMedium;
-        System.out.println("Discarded non-long durability meals after breakfast. Total cost: $" + totalCost);
+        BuffetDisplay.collectAndPrintWasteCost(buffet);
     }
 }

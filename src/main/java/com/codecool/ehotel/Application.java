@@ -12,11 +12,10 @@ import com.codecool.ehotel.service.breakfast.BreakfastManager;
 
 import static java.lang.System.*;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.*;
 
-public class EHotelBuffetApplication {
+public class Application {
     public static void main(String[] args) {
         // Initialize logger
         Logger logger = new ConsoleLogger();

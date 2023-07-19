@@ -15,4 +15,13 @@ public class BuffetDisplay {
         }
         System.out.println("Total portions in the buffet: " + buffet.getMealPortionsMap().values().stream().mapToInt(List::size).sum());
     }
+
+    public static int collectAndPrintWasteCost(Buffet buffet) {
+        BuffetService buffetService = new BuffetServiceImpl();
+        int costShort = buffetService.collectWaste(buffet, MealDurability.SHORT);
+        int costMedium = buffetService.collectWaste(buffet, MealDurability.MEDIUM);
+        int totalCost = costShort + costMedium;
+        System.out.println("Discarded non-long durability meals after breakfast. Total cost: $" + totalCost);
+        return totalCost;
+    }
 }

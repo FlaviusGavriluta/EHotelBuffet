@@ -16,23 +16,16 @@ public class BreakfastServer {
             GuestType guestType = guest.guestType();
             List<MealType> preferences = new ArrayList<>(guestType.getMealPreferences());
             Collections.shuffle(preferences);
-            boolean foundPreferredMeal = false;
+            MealType preferredMeal = preferences.get(0);
 
-            for (MealType mealType : preferences) {
-                if (buffetService.consumeFreshest(buffet, mealType)) {
-                    foundPreferredMeal = true;
-                    break;
-                }
-            }
-            if (!foundPreferredMeal) {
+            if (!buffetService.consumeFreshest(buffet, preferredMeal)) {
                 unhappyGuests.add(guest);
             }
         }
 
         if (!unhappyGuests.isEmpty()) {
             System.out.println("Total unhappy guests: " + unhappyGuests.size() + "\n");
-        } else {
+        } else if (guests.size() > 0)
             System.out.println("All guests were satisfied!\n");
-        }
     }
 }

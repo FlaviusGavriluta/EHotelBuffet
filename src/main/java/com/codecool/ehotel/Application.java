@@ -46,13 +46,10 @@ public class Application {
 
         // Refill the buffet with portions
         Map<MealType, Integer> portionCounts = new HashMap<>();
-        portionCounts.put(MealType.PANCAKE, 1);
         portionCounts.put(MealType.MASHED_POTATO, 1);
         portionCounts.put(MealType.MILK, 1);
         portionCounts.put(MealType.CEREAL, 1);
-        portionCounts.put(MealType.MUFFIN, 1);
         portionCounts.put(MealType.SUNNY_SIDE_UP, 1);
-        portionCounts.put(MealType.SCRAMBLED_EGGS, 1);
         BreakfastManager breakfastManager = new BreakfastManager(buffetService);
         breakfastManager.serve(breakfastCycles, portionCounts);
     }

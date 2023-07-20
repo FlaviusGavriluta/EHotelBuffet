@@ -13,7 +13,6 @@ public class BuffetDisplay {
             int portionCount = mealPortions.size();
             System.out.println(portionCount + " portion(s) of " + mealType);
         }
-        System.out.println("Total portions in the buffet: " + buffet.getMealPortionsMap().values().stream().mapToInt(List::size).sum());
     }
 
     public static int collectAndPrintWasteCost(Buffet buffet) {

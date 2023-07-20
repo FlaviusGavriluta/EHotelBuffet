@@ -9,9 +9,8 @@ import java.util.List;
 
 public class BreakfastServer {
     public static void serveBreakfastToGuest(List<Guest> guests, Buffet buffet, BuffetService buffetService) {
-        System.out.println();
-        System.out.println("=== Serving breakfast to guests ===");
         List<Guest> unhappyGuests = new ArrayList<>();
+        System.out.println();
 
         for (Guest guest : guests) {
             GuestType guestType = guest.guestType();
@@ -21,14 +20,12 @@ public class BreakfastServer {
 
             for (MealType mealType : preferences) {
                 if (buffetService.consumeFreshest(buffet, mealType)) {
-                    System.out.println(guest.name() + " has eaten " + mealType);
                     foundPreferredMeal = true;
                     break;
                 }
             }
             if (!foundPreferredMeal) {
                 unhappyGuests.add(guest);
-                System.out.println(guest.name() + " has eaten nothing and is unhappy.");
             }
         }
 

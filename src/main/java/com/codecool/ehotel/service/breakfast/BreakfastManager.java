@@ -50,14 +50,18 @@ public class BreakfastManager {
             BreakfastServer.serveBreakfastToGuest(guests, buffet, buffetService);
 
             // Discard old meals
-            if ((cycleIndex + 1) >= 3) {
+            if ((cycleIndex + 1) >= 3)
                 shouldCollectShortMeals = true;
-            }
+            if ((cycleIndex + 1) == 8)
+                shouldCollectShortMeals = false;
+
+
             initialTime = initialTime.plusSeconds(60 * 30);
 
             if (shouldCollectShortMeals) {
                 int costShort = buffetService.collectWaste(buffet, MealDurability.SHORT, initialTime);
-                System.out.println("Collected expired SHORT meals. Total cost: $" + costShort);
+                if (costShort > 0)
+                    System.out.println("Collected expired SHORT meals. Total cost: $" + costShort);
             }
             System.out.println();
         }

@@ -25,7 +25,7 @@ public class Application {
         // Generate guests for the season
         LocalDate seasonStart = LocalDate.of(2023, 8, 1);
         LocalDate seasonEnd = LocalDate.of(2023, 8, 31);
-        int numberOfGuests = 100;
+        int numberOfGuests = 50;
         List<Guest> randomGuests = GuestGenerator.generateRandomGuestsList(numberOfGuests, seasonStart, seasonEnd);
 
         // Print random guests for the entire season
@@ -41,6 +41,7 @@ public class Application {
 
         // Run breakfast buffet
         BuffetService buffetService = new BuffetServiceImpl();
+
         // Split guests for a day into 8 cycles
         List<List<Guest>> breakfastCycles = guestService.splitGuestsIntoBreakfastCycles(guestsForDay);
 

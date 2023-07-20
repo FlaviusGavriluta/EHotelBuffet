@@ -1,6 +1,7 @@
 package com.codecool.ehotel.service.guest;
 
 import com.codecool.ehotel.model.Guest;
+
 import static java.lang.System.out;
 
 import java.util.List;

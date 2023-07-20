@@ -29,11 +29,11 @@ public class GuestGenerator {
         String randomFirstName = RANDOM_FIRST_NAMES[random.nextInt(RANDOM_FIRST_NAMES.length)];
         String randomLastName = RANDOM_LAST_NAMES[random.nextInt(RANDOM_LAST_NAMES.length)];
         String randomName = randomFirstName + " " + randomLastName;
-
         GuestType randomGuestType = GUEST_TYPES[random.nextInt(GUEST_TYPES.length)];
 
         long seasonLength = ChronoUnit.DAYS.between(seasonStart, seasonEnd) + 1;
         long randomStay = minStay + random.nextInt(maxStay - minStay + 1);
+
         LocalDate randomCheckIn = seasonStart.plusDays(random.nextInt((int) seasonLength - (int) randomStay + 1));
         LocalDate randomCheckOut = randomCheckIn.plusDays(randomStay);
 
@@ -42,7 +42,6 @@ public class GuestGenerator {
 
     public static List<Guest> generateRandomGuestsList(int numGuests, LocalDate seasonStart, LocalDate seasonEnd) {
         List<Guest> randomGuests = new ArrayList<>();
-
         for (int i = 0; i < numGuests; i++) {
             Guest randomGuest = generateRandomGuest(seasonStart, seasonEnd);
             randomGuests.add(randomGuest);

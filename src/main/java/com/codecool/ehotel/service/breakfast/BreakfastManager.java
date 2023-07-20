@@ -55,15 +55,13 @@ public class BreakfastManager {
             if ((cycleIndex + 1) == 8)
                 shouldCollectShortMeals = false;
 
-
             initialTime = initialTime.plusSeconds(60 * 30);
 
             if (shouldCollectShortMeals) {
                 int costShort = buffetService.collectWaste(buffet, MealDurability.SHORT, initialTime);
                 if (costShort > 0)
-                    System.out.println("Collected expired SHORT meals. Total cost: $" + costShort);
+                    System.out.println("Collected expired SHORT meals. Total cost: $" + costShort + "\n");
             }
-            System.out.println();
         }
         BuffetDisplay.collectAndPrintWasteCost(buffet);
     }

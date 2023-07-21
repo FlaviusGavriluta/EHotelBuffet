@@ -3,6 +3,7 @@ package com.codecool.ehotel;
 import com.codecool.ehotel.logging.ConsoleLogger;
 import com.codecool.ehotel.logging.Logger;
 import com.codecool.ehotel.model.*;
+import com.codecool.ehotel.service.buffet.BuffetDisplay;
 import com.codecool.ehotel.service.buffet.BuffetService;
 import com.codecool.ehotel.service.buffet.BuffetServiceImpl;
 import com.codecool.ehotel.service.guest.GuestService;
@@ -59,5 +60,6 @@ public class Application {
             // Run breakfast for the current cycle with optimal portions
             breakfastManager.manageBreakfastCycle(breakfastCycles.get(cycleIndex), optimalPortions, cycleIndex);
         }
+        BuffetDisplay.collectAndPrintWasteCost(breakfastManager.getBuffet());
     }
 }

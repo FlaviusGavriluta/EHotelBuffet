@@ -6,8 +6,11 @@ import com.codecool.ehotel.service.buffet.BuffetService;
 import com.codecool.ehotel.service.buffet.BuffetDisplay;
 import com.codecool.ehotel.service.guest.GuestsDisplay;
 
+import static java.lang.System.out;
+
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +25,7 @@ public class BreakfastManager {
         this.initialTime = Instant.now();
     }
 
-    public void serve(List<List<Guest>> breakfastCycles, Map<MealType, Integer> portionCounts) {
+    public void manageBreakfast(List<List<Guest>> breakfastCycles, Map<MealType, Integer> portionCounts) {
         boolean shouldCollectShortMeals = false;
 
         LocalTime targetTime = LocalTime.of(7, 0);
@@ -32,14 +35,20 @@ public class BreakfastManager {
         long secondsToAdd = duration.toSeconds() + 60 * 60 * 3 + 1;
         initialTime = initialTime.plusSeconds(secondsToAdd);
 
+        OptimalPortionsOptimizer portionsOptimizer = new OptimalPortionsOptimizer();
+
         for (int cycleIndex = 0; cycleIndex < breakfastCycles.size(); cycleIndex++) {
             LocalTime startTime = LocalTime.of(7 + cycleIndex / 2, (cycleIndex % 2) * 30);
             LocalTime endTime = startTime.plusMinutes(30);
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
             String formattedTime = startTime.format(formatter) + " - " + endTime.format(formatter);
-            System.out.println("Cycle " + (cycleIndex + 1) + " of Breakfast Service: " + formattedTime);
+            out.println("Cycle " + (cycleIndex + 1) + " of Breakfast Service: " + formattedTime);
             GuestsDisplay.displayGuests(breakfastCycles.get(cycleIndex));
+
+            // Get optimal portions
+            Map<GuestType, Integer> remainingGuests = calculateRemainingGuests(breakfastCycles, cycleIndex);
+            Map<MealType, Integer> optimalPortions = portionsOptimizer.getOptimalPortions(buffet, remainingGuests, 8 - cycleIndex, 5);
 
             // Refill buffet supply
             buffetService.refillBuffet(buffet, portionCounts, initialTime);
@@ -64,5 +73,58 @@ public class BreakfastManager {
             }
         }
         BuffetDisplay.collectAndPrintWasteCost(buffet);
+    }
+
+    public Map<GuestType, Integer> calculateRemainingGuests(List<List<Guest>> breakfastCycles, int currentCycleIndex) {
+        Map<GuestType, Integer> remainingGuests = new HashMap<>();
+        for (GuestType guestType : GuestType.values()) {
+            int guestsExpected = 0;
+            for (int i = currentCycleIndex; i < breakfastCycles.size(); i++) {
+                List<Guest> guestsInCycle = breakfastCycles.get(i);
+                int guestsOfTypeInCycle = (int) guestsInCycle.stream()
+                        .filter(guest -> guest.guestType() == guestType)
+                        .count();
+                guestsExpected += guestsOfTypeInCycle;
+            }
+            remainingGuests.put(guestType, guestsExpected);
+        }
+        return remainingGuests;
+    }
+
+    public void manageBreakfastCycle(List<Guest> guests, Map<MealType, Integer> optimalPortions, int cycleIndex) {
+        boolean shouldCollectShortMeals = false;
+
+        LocalTime startTime = LocalTime.of(7 + cycleIndex / 2, (cycleIndex % 2) * 30);
+        LocalTime endTime = startTime.plusMinutes(30);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        String formattedTime = startTime.format(formatter) + " - " + endTime.format(formatter);
+        System.out.println("Cycle " + (cycleIndex + 1) + " of Breakfast Service: " + formattedTime);
+        GuestsDisplay.displayGuests(guests);
+
+        // Refill buffet supply
+        buffetService.refillBuffet(buffet, optimalPortions, initialTime);
+        BuffetDisplay.displayBuffetSupply(buffet);
+
+        // Serve breakfast to guests
+        BreakfastServer.serveBreakfastToGuest(guests, buffet, buffetService);
+
+        // Discard old meals
+        if ((cycleIndex + 1) >= 3)
+            shouldCollectShortMeals = true;
+        if ((cycleIndex + 1) == 8)
+            shouldCollectShortMeals = false;
+
+        initialTime = initialTime.plusSeconds(60 * 30);
+
+        if (shouldCollectShortMeals) {
+            int costShort = buffetService.collectWaste(buffet, MealDurability.SHORT, initialTime);
+            if (costShort > 0)
+                System.out.println("Collected expired SHORT meals. Total cost: $" + costShort + "\n");
+        }
+    }
+
+    public Buffet getBuffet() {
+        return buffet;
     }
 }

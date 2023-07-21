@@ -9,6 +9,7 @@ import com.codecool.ehotel.service.guest.GuestService;
 import com.codecool.ehotel.service.guest.GuestServiceImpl;
 import com.codecool.ehotel.service.guest.GuestGenerator;
 import com.codecool.ehotel.service.breakfast.BreakfastManager;
+import com.codecool.ehotel.service.breakfast.utils.OptimalPortionsOptimizer;
 
 import static java.lang.System.*;
 
@@ -25,7 +26,7 @@ public class Application {
         // Generate guests for the season
         LocalDate seasonStart = LocalDate.of(2023, 8, 1);
         LocalDate seasonEnd = LocalDate.of(2023, 8, 31);
-        int numberOfGuests = 50;
+        int numberOfGuests = 100;
         List<Guest> randomGuests = GuestGenerator.generateRandomGuestsList(numberOfGuests, seasonStart, seasonEnd);
 
         // Print random guests for the entire season
@@ -45,13 +46,18 @@ public class Application {
         // Split guests for a day into 8 cycles
         List<List<Guest>> breakfastCycles = guestService.splitGuestsIntoBreakfastCycles(guestsForDay);
 
-        // Refill the buffet with portions
-        Map<MealType, Integer> portionCounts = new HashMap<>();
-        portionCounts.put(MealType.MASHED_POTATO, 1);
-        portionCounts.put(MealType.MILK, 1);
-        portionCounts.put(MealType.CEREAL, 1);
-        portionCounts.put(MealType.SUNNY_SIDE_UP, 1);
+        // Create an instance of OptimalPortionsOptimizer
+        OptimalPortionsOptimizer portionsOptimizer = new OptimalPortionsOptimizer();
+
         BreakfastManager breakfastManager = new BreakfastManager(buffetService);
-        breakfastManager.serve(breakfastCycles, portionCounts);
+
+        for (int cycleIndex = 0; cycleIndex < breakfastCycles.size(); cycleIndex++) {
+            // Get the optimal portions for the current cycle
+            Map<GuestType, Integer> remainingGuests = breakfastManager.calculateRemainingGuests(breakfastCycles, cycleIndex);
+            Map<MealType, Integer> optimalPortions = portionsOptimizer.getOptimalPortions(breakfastManager.getBuffet(), remainingGuests, 8 - cycleIndex, 5);
+
+            // Run breakfast for the current cycle with optimal portions
+            breakfastManager.manageBreakfastCycle(breakfastCycles.get(cycleIndex), optimalPortions, cycleIndex);
+        }
     }
 }

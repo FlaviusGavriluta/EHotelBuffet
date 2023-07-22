@@ -8,5 +8,5 @@ import java.util.List;
 public interface GuestService {
     List<Guest> getGuestsForDay(List<Guest> guests, LocalDate date);
 
-    List<List<Guest>> splitGuestsIntoBreakfastCycles(List<Guest> guests);
+    List<List<Guest>> splitGuestsIntoBreakfastCycles(List<Guest> guestsForDay, int numCycles);
 }

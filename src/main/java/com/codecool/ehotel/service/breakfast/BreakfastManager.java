@@ -28,7 +28,7 @@ public class BreakfastManager {
     public void manageBreakfastCycle(List<Guest> guests, Map<MealType, Integer> optimalPortions, int cycleIndex) {
         boolean shouldCollectShortMeals = false;
 
-        LocalTime startTime = LocalTime.of(7 + cycleIndex / 2, (cycleIndex % 2) * 30);
+        LocalTime startTime = LocalTime.of(6 + cycleIndex / 2, (cycleIndex % 2) * 30);
         LocalTime endTime = startTime.plusMinutes(30);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");

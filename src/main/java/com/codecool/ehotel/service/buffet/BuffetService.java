@@ -3,8 +3,10 @@ package com.codecool.ehotel.service.buffet;
 import com.codecool.ehotel.model.Buffet;
 import com.codecool.ehotel.model.MealDurability;
 import com.codecool.ehotel.model.MealType;
+import com.codecool.ehotel.model.Guest;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 public interface BuffetService {

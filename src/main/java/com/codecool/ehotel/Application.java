@@ -51,11 +51,13 @@ public class Application {
         OptimalPortionsOptimizer portionsOptimizer = new OptimalPortionsOptimizer();
 
         BreakfastManager breakfastManager = new BreakfastManager(buffetService);
+        Buffet buffet = new Buffet();
 
         for (int cycleIndex = 0; cycleIndex < breakfastCycles.size(); cycleIndex++) {
             // Get the optimal portions for the current cycle
             Map<GuestType, Integer> remainingGuests = breakfastManager.calculateRemainingGuests(breakfastCycles, cycleIndex);
-            Map<MealType, Integer> optimalPortions = portionsOptimizer.getOptimalPortions(breakfastManager.getBuffet(), remainingGuests, 8 - cycleIndex, 5);
+            Map<MealType, Integer> optimalPortions = portionsOptimizer.getOptimalPortionsWithKnapsack(buffet,
+                    remainingGuests, 8 - cycleIndex, 5);
 
             // Run breakfast for the current cycle with optimal portions
             breakfastManager.manageBreakfastCycle(breakfastCycles.get(cycleIndex), optimalPortions, cycleIndex);

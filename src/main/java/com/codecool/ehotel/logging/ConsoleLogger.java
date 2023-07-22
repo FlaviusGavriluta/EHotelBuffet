@@ -12,14 +12,7 @@ public class ConsoleLogger implements Logger {
         out.println(logEntry);
     }
 
-    @Override
-    public void logError(String message) {
-        String logEntry = formatLogEntry("ERROR", message);
-        out.println(logEntry);
-    }
-
     private String formatLogEntry(String logType, String message) {
-        LocalDateTime timestamp = LocalDateTime.now();
         return String.format("[%s] %s", logType, message);
     }
 }

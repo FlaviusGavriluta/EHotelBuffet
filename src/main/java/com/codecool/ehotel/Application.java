@@ -57,7 +57,7 @@ public class Application {
             // Get the optimal portions for the current cycle
             Map<GuestType, Integer> remainingGuests = breakfastManager.calculateRemainingGuests(breakfastCycles, cycleIndex);
             Map<MealType, Integer> optimalPortions = portionsOptimizer.getOptimalPortionsWithKnapsack(buffet,
-                    remainingGuests, 8 - cycleIndex, 5);
+                    remainingGuests, 8 - cycleIndex, 10);
 
             // Run breakfast for the current cycle with optimal portions
             breakfastManager.manageBreakfastCycle(breakfastCycles.get(cycleIndex), optimalPortions, cycleIndex);

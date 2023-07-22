@@ -33,4 +33,18 @@ public class Buffet {
     public Map<MealType, List<MealPortion>> getMealPortionsMap() {
         return mealPortionsMap;
     }
+
+    public int estimateMaxPortions() {
+        int totalCapacity = 0;
+        for (List<MealPortion> mealPortions : mealPortionsMap.values()) {
+            totalCapacity += mealPortions.size();
+        }
+        return totalCapacity;
+    }
+
+    public int estimateMaxPortionsToAdd(int maxCapacity) {
+        int currentCapacity = estimateMaxPortions();
+        int maxPortionsToAdd = Math.max(0, maxCapacity - currentCapacity);
+        return maxPortionsToAdd;
+    }
 }

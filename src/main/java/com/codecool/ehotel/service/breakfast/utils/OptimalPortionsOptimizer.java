@@ -12,7 +12,7 @@ import java.util.Map;
 public class OptimalPortionsOptimizer {
     public Map<MealType, Integer> getOptimalPortionsWithKnapsack(Buffet buffet, Map<GuestType, Integer> remainingGuests, int cyclesLeft, int unhappyGuestCost) {
         Map<MealType, Integer> optimalPortions = new HashMap<>();
-        int maxCapacity = 20; // Maximum number of portions we can carry
+        int maxCapacity = 15; // Maximum number of portions we can carry
 
         // Create arrays to store the values and weights (unhappy guests and portions needed) for each meal type
         int[] values = new int[MealType.values().length];

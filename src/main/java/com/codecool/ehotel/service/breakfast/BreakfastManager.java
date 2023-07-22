@@ -44,10 +44,11 @@ public class BreakfastManager {
         BreakfastServer.serveBreakfastToGuest(guests, buffet, buffetService);
 
         // Discard old meals
-        if ((cycleIndex + 1) >= 3)
+        if ((cycleIndex + 1) >= 3) {
             shouldCollectShortMeals = true;
-        if ((cycleIndex + 1) == 8)
+        } else if ((cycleIndex + 1) == 8) {
             shouldCollectShortMeals = false;
+        }
 
         initialTime = initialTime.plusSeconds(60 * 30);
 

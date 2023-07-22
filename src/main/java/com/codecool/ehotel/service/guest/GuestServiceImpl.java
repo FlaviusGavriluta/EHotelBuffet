@@ -23,22 +23,23 @@ public class GuestServiceImpl implements GuestService {
     }
 
     @Override
-    public List<List<Guest>> splitGuestsIntoBreakfastCycles(List<Guest> guests) {
-        int numCycles = 8; // Number of breakfast cycles per day
-        List<List<Guest>> breakfastCycles = new ArrayList<>();
+    public List<List<Guest>> splitGuestsIntoBreakfastCycles(List<Guest> guestsForDay, int numCycles) {
+        // Shuffle the list of guests randomly
+        Collections.shuffle(guestsForDay);
 
-        // Initialize empty breakfast cycles
+        // Initialize the breakfast cycles
+        List<List<Guest>> breakfastCycles = new ArrayList<>();
         for (int i = 0; i < numCycles; i++) {
             breakfastCycles.add(new ArrayList<>());
         }
 
-        Collections.shuffle(guests);
+        // Shuffle the breakfast cycles to randomize the distribution
+        Collections.shuffle(breakfastCycles);
 
         // Distribute guests into breakfast cycles
-        int cycleIndex = 0;
-        for (Guest guest : guests) {
-            breakfastCycles.get(cycleIndex).add(guest);
-            cycleIndex = (cycleIndex + 1) % numCycles; // Move to the next cycle
+        for (Guest guest : guestsForDay) {
+            int cycleIndex = new Random().nextInt(numCycles); // get the index randomly
+            breakfastCycles.get(cycleIndex).add(guest); // Add the guest to the current cycle
         }
 
         return breakfastCycles;

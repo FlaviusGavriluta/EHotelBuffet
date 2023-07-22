@@ -45,7 +45,7 @@ public class Application {
         BuffetService buffetService = new BuffetServiceImpl();
 
         // Split guests for a day into 8 cycles
-        List<List<Guest>> breakfastCycles = guestService.splitGuestsIntoBreakfastCycles(guestsForDay);
+        List<List<Guest>> breakfastCycles = guestService.splitGuestsIntoBreakfastCycles(guestsForDay, 8);
 
         // Create an instance of OptimalPortionsOptimizer
         OptimalPortionsOptimizer portionsOptimizer = new OptimalPortionsOptimizer();

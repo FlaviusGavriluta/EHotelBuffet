@@ -17,68 +17,53 @@ public class OptimalPortionsOptimizer {
         // Create arrays to store the values and weights (unhappy guests and portions needed) for each meal type
         int[] values = new int[MealType.values().length];
         int[] weights = new int[MealType.values().length];
-        int index = 0;
 
-        for (MealType mealType : MealType.values()) {
-            int portionsRequired = 0;
-            for (GuestType guestType : GuestType.values()) {
-                int guestsExpected = remainingGuests.getOrDefault(guestType, 0);
-                List<MealPortion> mealPortions = buffet.getMealPortionsByType(mealType);
-                int portionsAvailable = mealPortions.size();
-                int portionsPerGuest = guestType.getMealPreferences().contains(mealType) ? 1 : 0;
+        // Populate the values and weights arrays based on the meal types in the buffet
+        List<MealType> allMealTypes = List.of(MealType.values());
+        for (int i = 0; i < allMealTypes.size(); i++) {
+            MealType mealType = allMealTypes.get(i);
+            List<MealPortion> mealPortions = buffet.getMealPortionsByTypeOrderedByFreshness(mealType);
 
-                if (portionsPerGuest == 0 || guestsExpected == 0) {
-                    continue;
+            int portionsNeeded = 0;
+            for (GuestType guestType : remainingGuests.keySet()) {
+                int guestsRemaining = remainingGuests.get(guestType);
+                List<MealType> preferences = guestType.getMealPreferences();
+                if (guestsRemaining > 0 && preferences.contains(mealType)) {
+                    portionsNeeded += guestsRemaining;
                 }
-
-                int portionsNeeded = guestsExpected * portionsPerGuest;
-                portionsRequired += Math.max(0, portionsNeeded - portionsAvailable);
             }
 
-            // Calculate the value for each meal type (number of unhappy guests we can avoid)
-            int value = (int) Math.pow(unhappyGuestCost, cyclesLeft) * portionsRequired;
-            values[index] = value;
-
-            // Calculate the weight for each meal type (number of new portions needed)
-            int weight = portionsRequired;
-            weights[index] = weight;
-
-            index++;
+            values[i] = unhappyGuestCost * portionsNeeded;
+            weights[i] = mealPortions.size();
         }
 
         // Use 0-1 Knapsack algorithm to find the optimal portions
-        int[] dp = new int[maxCapacity + 1];
-        int[][] path = new int[MealType.values().length][maxCapacity + 1];
-
-        for (int i = 0; i < MealType.values().length; i++) {
-            for (int j = maxCapacity; j >= weights[i]; j--) {
-                if (dp[j] < dp[j - weights[i]] + values[i]) {
-                    dp[j] = dp[j - weights[i]] + values[i];
-                    path[i][j] = 1;
+        int[][] dp = new int[MealType.values().length + 1][maxCapacity + 1];
+        for (int i = 1; i <= MealType.values().length; i++) {
+            for (int j = 0; j <= maxCapacity; j++) {
+                if (weights[i - 1] <= j) {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i - 1][j - weights[i - 1]] + values[i - 1]);
+                } else {
+                    dp[i][j] = dp[i - 1][j];
                 }
             }
         }
 
-        // Reconstruct the optimal portions
-        for (int i = MealType.values().length - 1, j = maxCapacity; i >= 0; i--) {
-            if (path[i][j] == 1) {
-                MealType mealType = MealType.values()[i];
-                int portionsRequired = 0;
-                for (GuestType guestType : GuestType.values()) {
-                    int guestsExpected = remainingGuests.getOrDefault(guestType, 0);
-                    List<MealPortion> mealPortions = buffet.getMealPortionsByType(mealType);
-                    int portionsAvailable = mealPortions.size();
-                    int portionsPerGuest = guestType.getMealPreferences().contains(mealType) ? 1 : 0;
-
-                    if (portionsPerGuest == 0 || guestsExpected == 0) {
-                        continue;
-                    }
-
-                    int portionsNeeded = guestsExpected * portionsPerGuest;
-                    portionsRequired += Math.max(0, portionsNeeded - portionsAvailable);
+        // Trace back the optimal portions using the dp array
+        int i = MealType.values().length;
+        int j = maxCapacity;
+        while (i > 0 && j > 0) {
+            if (dp[i][j] != dp[i - 1][j]) {
+                MealType mealType = allMealTypes.get(i - 1);
+                int portionsToAdd = 1;
+                if (weights[i - 1] > 0) {
+                    portionsToAdd = Math.min(j / weights[i - 1], remainingGuests.size());
                 }
-                optimalPortions.put(mealType, portionsRequired);
-                j -= weights[i];
+                optimalPortions.put(mealType, portionsToAdd);
+                j -= portionsToAdd * weights[i - 1];
+                i--;
+            } else {
+                i--;
             }
         }
 

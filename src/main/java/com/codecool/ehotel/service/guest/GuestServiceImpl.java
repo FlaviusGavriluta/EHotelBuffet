@@ -2,76 +2,45 @@ package com.codecool.ehotel.service.guest;
 
 import com.codecool.ehotel.model.Guest;
 import com.codecool.ehotel.model.GuestType;
+import com.codecool.ehotel.model.MealType;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GuestServiceImpl implements GuestService {
-    private static Random random = new Random();
-    private static final List<String> GUEST_NAMES = List.of("John", "Jane", "Jack", "Jill", "James", "Judy", "Joe", "Jenny", "Jim", "Jessica");
-    private static final GuestType[] GUEST_TYPES = GuestType.values();
+    private List<Guest> guestList;
 
-    @Override
-    public Guest generateRandomGuest(LocalDate seasonStart, LocalDate seasonEnd) {
-        Guest generatedGuest;
-        String name = getRandomName();
-        GuestType guestType = getRandomGuestType();
-        LocalDate checkIn = getRandomCheckInDate(seasonStart, seasonEnd);
-        LocalDate checkOut = getRandomCheckOutDate(checkIn, seasonEnd);
-        generatedGuest = new Guest(name, guestType, checkIn, checkOut);
-        return generatedGuest;
+    public GuestServiceImpl(List<Guest> guestList) {
+        this.guestList = guestList;
     }
 
     @Override
     public List<Guest> getGuestsForDay(List<Guest> guests, LocalDate date) {
-        List<Guest> guestsForDay = new ArrayList<>();
-        for (Guest guest : guests) {
-            if (date.isAfter(guest.checkIn()) && date.isBefore(guest.checkOut())) {
-                guestsForDay.add(guest);
-            }
-        }
-        return guestsForDay;
+        return guestList.stream()
+                .filter(guest -> guest.checkIn().isBefore(date.plusDays(1)) && guest.checkOut().isAfter(date))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<List<Guest>> splitGuestsIntoBreakfastGroups(List<Guest> guests) {
-        List<List<Guest>> breakfastGroups = new ArrayList<>();
-        int breakfastCycles = 8;
-        // Shuffle the guest list randomly
+    public List<List<Guest>> splitGuestsIntoBreakfastCycles(List<Guest> guests) {
+        int numCycles = 8; // Number of breakfast cycles per day
+        List<List<Guest>> breakfastCycles = new ArrayList<>();
+
+        // Initialize empty breakfast cycles
+        for (int i = 0; i < numCycles; i++) {
+            breakfastCycles.add(new ArrayList<>());
+        }
+
         Collections.shuffle(guests);
-        // Initialize the breakfast groups with empty lists
-        for (int i = 0; i < breakfastCycles; i++) {
-            breakfastGroups.add(new ArrayList<>());
-        }
+
+        // Distribute guests into breakfast cycles
+        int cycleIndex = 0;
         for (Guest guest : guests) {
-            // Generate a random cycle index for the guest
-            int cycleIndex = random.nextInt(breakfastCycles);
-            // Check if the cycle is already populated with guests
-            List<Guest> cycleGuests = breakfastGroups.get(cycleIndex);
-            cycleGuests.add(guest);
+            breakfastCycles.get(cycleIndex).add(guest);
+            cycleIndex = (cycleIndex + 1) % numCycles; // Move to the next cycle
         }
-        return breakfastGroups;
-    }
 
-    public String getRandomName() {
-        return GUEST_NAMES.get(random.nextInt(GUEST_NAMES.size()));
-    }
-
-    public GuestType getRandomGuestType() {
-        return GUEST_TYPES[random.nextInt(GUEST_TYPES.length)];
-    }
-
-    private LocalDate getRandomCheckInDate(LocalDate seasonStart, LocalDate seasonEnd) {
-        int seasonLength = (int) seasonStart.until(seasonEnd, java.time.temporal.ChronoUnit.DAYS) + 1;
-        int randomStayLength = random.nextInt(7) + 1;
-        int maxCheckInDay = seasonLength - randomStayLength;
-        int randomCheckInDay = random.nextInt(maxCheckInDay + 1);
-        return seasonStart.plusDays(randomCheckInDay);
-    }
-
-    private LocalDate getRandomCheckOutDate(LocalDate checkIn, LocalDate seasonEnd) {
-        int maxStayLength = (int) checkIn.until(seasonEnd, java.time.temporal.ChronoUnit.DAYS) + 1;
-        int randomStayLength = random.nextInt(maxStayLength) + 1;
-        return checkIn.plusDays(randomStayLength);
+        return breakfastCycles;
     }
 }
